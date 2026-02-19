@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv
+venv/
+env/
+
+# Claude local settings
+.claude/
+
+# macOS
+.DS_Store
+
+# Streamlit cache
+.streamlit/secrets.toml
+
+# Test files
+test_*.py
