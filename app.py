@@ -22,357 +22,58 @@ except ImportError:
 # PAGE CONFIG
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="S8 Underwriter — Wholesale Intelligence",
+    page_title="Section 8 Wholesale Underwriter",
     layout="wide",
-    page_icon="💎",
+    page_icon="🏠",
 )
 
 st.markdown("""
 <style>
-/* ── Fonts: Oswald (headings) + Manrope (body) ── */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap');
-
-/* ── Base ── */
-html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"],
-[data-testid="stMain"], [data-testid="block-container"] {
-    background-color: #111318 !important;
-    font-family: 'Manrope', sans-serif !important;
-    color: #e2e2e8 !important;
-}
-[data-testid="stHeader"]      { background: #111318 !important; border-bottom: 1px solid #1e2130 !important; }
-[data-testid="stToolbar"]     { background: #111318 !important; }
-[data-testid="stDecoration"]  { display: none !important; }
-
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-    background: #0d0f15 !important;
-    border-right: 1px solid #1e2130 !important;
-}
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] span,
-[data-testid="stSidebar"] div { color: #a0a0ae !important; font-size: 13px !important; }
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    font-family: 'Manrope', sans-serif !important;
-    color: #f8b319 !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 2px !important;
-    text-transform: uppercase !important;
-    margin-top: 24px !important;
-    margin-bottom: 10px !important;
-    padding-bottom: 8px !important;
-    border-bottom: 1px solid #1e2130 !important;
-}
-
-/* ── Inputs ── */
-[data-testid="stNumberInput"] input,
-[data-testid="stTextInput"]   input {
-    background: #1a1c24 !important;
-    border: 1px solid #252836 !important;
-    border-radius: 8px !important;
-    color: #e2e2e8 !important;
-    font-family: 'Manrope', sans-serif !important;
-    font-size: 13px !important;
-}
-[data-testid="stNumberInput"] input:focus,
-[data-testid="stTextInput"]   input:focus {
-    border-color: #f8b319 !important;
-    box-shadow: 0 0 0 2px rgba(248,179,25,0.12) !important;
-}
-[data-baseweb="select"] > div {
-    background: #1a1c24 !important;
-    border: 1px solid #252836 !important;
-    border-radius: 8px !important;
-    color: #e2e2e8 !important;
-}
-[data-baseweb="popover"] li,
-[data-baseweb="menu"]    li { background: #1a1c24 !important; color: #e2e2e8 !important; }
-[data-baseweb="popover"] li:hover { background: #252836 !important; }
-
-/* Slider track + thumb */
-[data-testid="stSlider"] [data-baseweb="slider"] [role="slider"] {
-    background: #f8b319 !important;
-    border: 2px solid #111318 !important;
-}
-[data-testid="stSlider"] [data-baseweb="slider"] div[class*="Track"] > div:first-child {
-    background: #f8b319 !important;
-}
-
-/* ── Metric cards ── */
+/* Clean card look for metrics */
 div[data-testid="metric-container"] {
-    background: #1a1c24 !important;
-    border: 1px solid #252836 !important;
-    border-radius: 12px !important;
-    padding: 18px 22px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
-}
-div[data-testid="metric-container"] label,
-div[data-testid="metric-container"] [data-testid="stMetricLabel"] {
-    color: #767688 !important;
-    font-family: 'Manrope', sans-serif !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 1.2px !important;
-    text-transform: uppercase !important;
-}
-div[data-testid="metric-container"] [data-testid="stMetricValue"] {
-    font-family: 'Oswald', sans-serif !important;
-    color: #f0f0f6 !important;
-    font-size: 26px !important;
-    font-weight: 600 !important;
-    letter-spacing: -0.5px !important;
-}
-div[data-testid="metric-container"] [data-testid="stMetricDelta"] {
-    font-size: 12px !important;
-}
-
-/* ── Expanders ── */
-[data-testid="stExpander"] {
-    background: #1a1c24 !important;
-    border: 1px solid #252836 !important;
-    border-radius: 12px !important;
-    margin-bottom: 10px !important;
-    overflow: hidden !important;
-}
-[data-testid="stExpander"]:hover { border-color: rgba(248,179,25,0.25) !important; }
-[data-testid="stExpander"] summary {
-    font-family: 'Manrope', sans-serif !important;
-    color: #c8c8d8 !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    padding: 14px 18px !important;
-}
-[data-testid="stExpander"] summary:hover { color: #f8b319 !important; }
-[data-testid="stExpander"] summary svg  { fill: #767688 !important; }
-
-/* ── DataFrame ── */
-[data-testid="stDataFrame"] {
-    border: 1px solid #252836 !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-}
-
-/* ── Buttons ── */
-[data-testid="stDownloadButton"] button,
-[data-testid="stButton"] button {
-    font-family: 'Manrope', sans-serif !important;
-    background: #f8b319 !important;
-    color: #0d0f15 !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    letter-spacing: 0.3px !important;
-    padding: 10px 22px !important;
-    transition: all 0.15s ease !important;
-}
-[data-testid="stDownloadButton"] button:hover,
-[data-testid="stButton"] button:hover {
-    background: #e4a415 !important;
-    box-shadow: 0 4px 14px rgba(248,179,25,0.25) !important;
-}
-
-/* ── File uploader ── */
-[data-testid="stFileUploader"] section {
-    background: #1a1c24 !important;
-    border: 1px dashed #2e3148 !important;
-    border-radius: 12px !important;
-}
-[data-testid="stFileUploader"] section:hover { border-color: rgba(248,179,25,0.4) !important; }
-
-/* ── Alerts ── */
-[data-testid="stAlert"] {
-    background: #1a1c24 !important;
-    border: 1px solid #252836 !important;
-    border-left: 3px solid #f8b319 !important;
-    border-radius: 8px !important;
-    font-family: 'Manrope', sans-serif !important;
-    color: #a0a0ae !important;
-    font-size: 13px !important;
-}
-
-/* ── Progress bar ── */
-[data-testid="stProgressBar"] > div > div {
-    background: linear-gradient(90deg, #f8b319 0%, #fcd46a 100%) !important;
-    border-radius: 4px !important;
-}
-[data-testid="stProgressBar"] > div {
-    background: #1e2130 !important;
-    border-radius: 4px !important;
-}
-
-/* ── Spinner ── */
-[data-testid="stSpinner"] * { color: #f8b319 !important; border-top-color: #f8b319 !important; }
-
-/* ── Captions ── */
-[data-testid="stCaptionContainer"], .stCaption {
-    color: #4a4a5e !important;
-    font-size: 11px !important;
-    font-family: 'Manrope', sans-serif !important;
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar              { width: 6px; height: 6px; }
-::-webkit-scrollbar-track        { background: #111318; }
-::-webkit-scrollbar-thumb        { background: #2e3148; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover  { background: #3e4168; }
-
-/* ── Flag banners ── */
-.flag-critical {
-    background: rgba(221,0,0,0.08);
-    border-left: 3px solid #dd0000;
-    padding: 10px 16px;
-    border-radius: 8px;
-    margin: 8px 0;
-    color: #f08090;
-    font-size: 13px;
-    font-family: 'Manrope', sans-serif;
-    line-height: 1.5;
-}
-.flag-inspect {
-    background: rgba(248,179,25,0.08);
-    border-left: 3px solid #f8b319;
-    padding: 10px 16px;
-    border-radius: 8px;
-    margin: 8px 0;
-    color: #f8b319;
-    font-size: 13px;
-    font-family: 'Manrope', sans-serif;
-    line-height: 1.5;
-}
-.flag-rehab {
-    background: rgba(80,90,120,0.12);
-    border-left: 3px solid #404560;
-    padding: 10px 16px;
-    border-radius: 8px;
-    margin: 8px 0;
-    color: #7878a0;
-    font-size: 13px;
-    font-family: 'Manrope', sans-serif;
-    line-height: 1.5;
-}
-
-/* ── Quality pills ── */
-.pill-green  { display:inline-block; background:rgba(0,187,0,0.1);   color:#00bb00; border:1px solid rgba(0,187,0,0.25);   padding:3px 12px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:0.5px; font-family:'Manrope',sans-serif; }
-.pill-yellow { display:inline-block; background:rgba(248,179,25,0.1); color:#f8b319; border:1px solid rgba(248,179,25,0.25); padding:3px 12px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:0.5px; font-family:'Manrope',sans-serif; }
-.pill-red    { display:inline-block; background:rgba(221,0,0,0.1);    color:#f07080; border:1px solid rgba(221,0,0,0.25);    padding:3px 12px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:0.5px; font-family:'Manrope',sans-serif; }
-.pill-grey   { display:inline-block; background:rgba(80,80,110,0.15); color:#60607a; border:1px solid rgba(80,80,110,0.25);  padding:3px 12px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:0.5px; font-family:'Manrope',sans-serif; }
-
-/* ── Zillow insight card ── */
-.zillow-insight {
-    background: rgba(248,179,25,0.06);
-    border: 1px solid rgba(248,179,25,0.18);
-    border-radius: 8px;
-    padding: 10px 16px;
-    color: #c8a060;
-    font-size: 13px;
-    font-family: 'Manrope', sans-serif;
-    margin-top: 10px;
-    line-height: 1.5;
-}
-
-/* ── Section divider label ── */
-.section-label {
-    font-family: 'Manrope', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: #383850;
-    margin: 28px 0 12px 0;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #1e2130;
-}
-
-/* ── Intelligence stack card ── */
-.intel-card {
-    background: #1a1c24;
-    border: 1px solid #252836;
-    border-radius: 12px;
-    padding: 20px 22px;
-}
-.intel-card-title {
-    font-family: 'Manrope', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #f8b319;
-    margin-bottom: 14px;
-}
-.intel-row {
-    font-family: 'Manrope', sans-serif;
-    font-size: 12px;
-    color: #767688;
-    line-height: 2;
-}
-.intel-num { color: #f8b319; font-weight: 600; margin-right: 10px; }
-
-/* ── Description box ── */
-.desc-box {
-    font-family: 'Manrope', sans-serif;
-    font-size: 12px;
-    color: #5a5a78;
-    background: #161820;
-    border: 1px solid #1e2130;
+    background: #f8f9fa;
     border-radius: 8px;
     padding: 12px 16px;
-    margin-top: 10px;
-    line-height: 1.6;
+    border: 1px solid #e9ecef;
 }
-
-/* ── Meta footnote ── */
-.meta-note {
-    font-family: 'Manrope', sans-serif;
-    font-size: 11px;
-    color: #303048;
-    margin-top: 10px;
-}
+/* Color‑coded inspection badges in the table */
+.badge-critical  { color:#842029; background:#f8d7da; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+.badge-inspect   { color:#664d03; background:#fff3cd; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+.badge-good      { color:#0f5132; background:#d1e7dd; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+/* Expander detail flags */
+.flag-critical { background-color:#f8d7da; border-left:4px solid #dc3545; padding:8px 12px; border-radius:4px; margin:4px 0; }
+.flag-inspect  { background-color:#fff3cd; border-left:4px solid #ffc107; padding:8px 12px; border-radius:4px; margin:4px 0; }
+.flag-rehab    { background-color:#e2e3e5; border-left:4px solid #6c757d; padding:8px 12px; border-radius:4px; margin:4px 0; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ──
-st.markdown("""
-<div style="padding:32px 0 20px 0; border-bottom:1px solid #1e2130; margin-bottom:24px;">
-  <div style="display:flex; align-items:center; gap:16px;">
-    <div style="background:#f8b319; border-radius:12px; width:46px; height:46px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">💎</div>
-    <div>
-      <div style="font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; color:#f0f0f8; letter-spacing:0.5px; line-height:1;">Section 8 Wholesale Underwriter</div>
-      <div style="font-family:'Manrope',sans-serif; font-size:12px; color:#40405a; margin-top:5px; letter-spacing:0.3px;">HUD SAFMR&nbsp; ·&nbsp; DSCR Engine&nbsp; ·&nbsp; Zillow Signals&nbsp; ·&nbsp; Census ACS</div>
-    </div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
+st.title("🏠 Section 8 Wholesale Underwriter")
+st.caption("Upload a CSV → get zip-accurate Section 8 rents (HUD SAFMR) + DSCR-based wholesale offers")
 
 # ─────────────────────────────────────────────
 # SIDEBAR
 # ─────────────────────────────────────────────
 with st.sidebar:
-    st.markdown('<div style="font-family:\'Oswald\',sans-serif; padding:20px 0 2px 0; font-size:16px; font-weight:600; color:#f0f0f8; letter-spacing:1px;">Deal Parameters</div>', unsafe_allow_html=True)
-
-    st.header("Financing")
+    st.header("💰 Financing")
     interest_rate    = st.number_input("Interest Rate (%)", value=7.5, step=0.1, min_value=1.0, max_value=20.0) / 100
     down_pct         = st.slider("Down Payment (%)", 10, 50, 20) / 100
     loan_term_years  = st.selectbox("Loan Term (Years)", [30, 20, 15], index=0)
     target_cashflow  = st.number_input("Target Buyer Cashflow ($/mo)", value=400, step=50)
 
-    st.header("Expenses")
+    st.header("🧾 Expenses")
     tax_rate         = st.number_input("Property Tax (% of value/yr)", value=1.5, step=0.1, min_value=0.0) / 100
     insurance_rate   = st.number_input("Insurance (% of value/yr)",    value=0.75, step=0.05, min_value=0.0) / 100
     vacancy_rate     = st.number_input("Vacancy (%)",                   value=5.0, step=1.0, min_value=0.0) / 100
     maintenance_rate = st.number_input("Maintenance (% of rent/mo)",   value=5.0, step=1.0, min_value=0.0) / 100
     mgmt_rate        = st.number_input("Property Mgmt (%)",            value=0.0, step=1.0, min_value=0.0) / 100
 
-    st.header("Wholesale Deal")
-    wholesale_fee    = st.number_input("Assignment Fee ($)", value=10000, step=500, min_value=0)
+    st.header("🏷️ Wholesale Deal")
+    wholesale_fee    = st.number_input("Your Assignment Fee ($)", value=10000, step=500, min_value=0)
     closing_costs_pct= st.number_input("Closing Costs (% of purchase)", value=3.0, step=0.5, min_value=0.0) / 100
 
-    st.header("Offer Flags")
+    st.header("🚩 Offer Flags")
     inspect_threshold = st.number_input(
-        "Flag DSCR headroom above list price (%):",
+        "Flag if DSCR max exceeds List Price by (%):",
         value=15, step=5, min_value=0,
         help="When the DSCR math supports a price much higher than list, it likely needs heavy rehab."
     )
@@ -383,14 +84,14 @@ with st.sidebar:
     )
     use_110 = "110%" in payment_standard
 
-    st.header("Rentcast API (optional)")
+    st.header("🔑 Rentcast API (optional)")
     rentcast_key = st.text_input(
-        "API Key",
+        "Rentcast API Key",
         type="password",
         help=(
-            "Optional — auto-fetches listing descriptions by address.\n\n"
+            "Optional — enables auto-fetching listing descriptions by address.\n\n"
             "Free tier: 50 calls/month at app.rentcast.io\n\n"
-            "Without a key, add a 'Description' column to your CSV."
+            "Without a key, include a 'Description' column in your CSV."
         ),
     )
 
@@ -983,49 +684,57 @@ def calculate_dscr_offer(
 # ─────────────────────────────────────────────
 # MAIN UI
 # ─────────────────────────────────────────────
-st.markdown('<div class="section-label">Upload & Analyze</div>', unsafe_allow_html=True)
-
-col_up, col_info = st.columns([3, 2])
+st.markdown("---")
+col_up, col_info = st.columns([2, 1])
 
 with col_up:
-    uploaded = st.file_uploader("Upload Property List (CSV or Excel)", type=["csv", "xlsx"])
+    uploaded = st.file_uploader("Upload Property CSV / Excel", type=["csv", "xlsx"])
     st.caption(
-        "Required columns: `Address` · `Zip` · `Bedrooms` · `List Price`  ·  "
-        "Optional: `Description`"
+        "**Required:** `Address` · `Zip` · `Bedrooms` · `List Price`  |  "
+        "**Optional:** `Description` (skips Zillow scrape for that row)"
     )
-    sample = pd.DataFrame({
-        "Address":    ["3820 Guilford Ave, Indianapolis, IN 46205", "456 Oak Ave, Indianapolis, IN 46218"],
-        "Zip":        [46205, 46218],
-        "Bedrooms":   [3, 4],
-        "List Price": [95000, 120000],
-        "Description":["", ""],
-    })
-    st.download_button("⬇️ Download Sample CSV", sample.to_csv(index=False).encode(),
-                       "sample_properties.csv", "text/csv")
 
 with col_info:
-    st.markdown("""
-<div class="intel-card">
-  <div class="intel-card-title">Intelligence Stack</div>
-  <div class="intel-row">
-    <span class="intel-num">01</span>HUD FY2026 SAFMR — zip-level Section 8 rents<br>
-    <span class="intel-num">02</span>Zillow signals — agent insight, DOM, price cuts<br>
-    <span class="intel-num">03</span>Census ACS — median value &amp; vacancy by ZIP<br>
-    <span class="intel-num">04</span>DSCR engine → max buyer price → net offer<br>
-    <span class="intel-num">05</span>Keyword scan on listing descriptions<br>
-    <span class="intel-num">06</span>Deal tiers: Green Light / Caution / Inspect / No Deal
-  </div>
-</div>
-""", unsafe_allow_html=True)
+    st.info(
+        "**How it works**\n"
+        "1. Pulls HUD FY2026 **Small Area FMR** — real zip-level rents\n"
+        "2. Gets listing description via **Rentcast API** or your CSV column\n"
+        "3. DSCR math → max buyer price (≤ list − $10k) → your net offer\n"
+        "4. Flags distressed listings & inspection-needed deals\n"
+        "5. Export all deals or good-only filtered CSV"
+    )
+    st.info(
+        "**Property Condition Detection — 4 layers:**\n\n"
+        "1. ✅ **Free auto:** Zillow listing signals (agent insight, days on market, "
+        "price reductions) via Zillow's public search API — no key needed\n\n"
+        "2. ✅ **Free always:** Census ACS median home value + vacancy rate by ZIP "
+        "— flags properties priced far below zip median as likely distressed\n\n"
+        "3. ✅ **Free if you export from MLS/PropStream:** Add a `Description` column "
+        "to your CSV — app reads it directly for keyword analysis\n\n"
+        "4. 🔑 **Rentcast API** (optional, 50 free calls/mo) — auto-fetches listing "
+        "description by address without needing a CSV column",
+        icon="ℹ️"
+    )
+
+# Sample CSV
+sample = pd.DataFrame({
+    "Address":    ["3820 Guilford Ave, Indianapolis, IN 46205", "456 Oak Ave, Indianapolis, IN 46218"],
+    "Zip":        [46205, 46218],
+    "Bedrooms":   [3, 4],
+    "List Price": [95000, 120000],
+    "Description":["", ""],
+})
+st.download_button("⬇️ Download Sample CSV", sample.to_csv(index=False).encode(),
+                   "sample_properties.csv", "text/csv")
 
 # ── Load SAFMR once ──
-with st.spinner("Loading HUD SAFMR data…"):
+with st.spinner("Loading HUD SAFMR rent data (one-time, cached 7 days)…"):
     safmr_df = load_safmr()
 
 if not safmr_df.empty:
-    st.markdown(f'<div style="font-family:\'Manrope\',sans-serif; font-size:12px; color:#00bb00; padding:8px 0; letter-spacing:0.2px;">✓ &nbsp;HUD SAFMR loaded — <strong style="color:#e2e2e8; font-weight:600;">{len(safmr_df):,}</strong> zip codes</div>', unsafe_allow_html=True)
+    st.success(f"✅ HUD SAFMR loaded — {len(safmr_df):,} zip codes with zip-level Section 8 rents")
 else:
-    st.markdown('<div style="font-family:\'Manrope\',sans-serif; font-size:12px; color:#dd5555; padding:8px 0;">⚠ &nbsp;Could not load HUD SAFMR — using national estimates</div>', unsafe_allow_html=True)
+    st.warning("⚠️ Could not load HUD SAFMR. Using national estimates.")
 
 # ── Process uploaded file ──
 if uploaded:
@@ -1059,16 +768,16 @@ if uploaded:
     raw = raw[raw["List Price"] >= 20000].reset_index(drop=True)
 
     if len(below_20k):
-        st.markdown(f'<div style="font-size:12px; color:#e07080; padding:4px 0;">⚠ Skipped {len(below_20k)} propert{"y" if len(below_20k)==1 else "ies"} listed under $20,000</div>', unsafe_allow_html=True)
+        st.warning(f"⚠️ Skipped {len(below_20k)} properties listed under $20,000 (not analyzed).")
 
     if raw.empty:
         st.error("No valid properties remaining after filtering.")
         st.stop()
 
-    st.markdown(f'<div style="font-size:13px; color:#8a8a9a; padding:6px 0;">Analyzing <strong style="color:#f0f0f0;">{len(raw)}</strong> properties…</div>', unsafe_allow_html=True)
+    st.success(f"Loaded **{len(raw)}** properties. Running analysis…")
 
     # ── Enrichment loop ──
-    progress = st.progress(0, text="Initializing…")
+    progress = st.progress(0, text="Starting…")
     rows_out = []
 
     for i, row in raw.iterrows():
@@ -1224,25 +933,25 @@ if uploaded:
             "Desc Source":          desc_src,
         })
 
-    progress.progress(100, text="Analysis complete")
+    progress.progress(100, text="Done ✅")
     results = pd.DataFrame(rows_out)
 
     # ── Summary metrics ──
-    st.markdown('<div class="section-label" style="margin-top:28px;">Deal Summary</div>', unsafe_allow_html=True)
+    st.markdown("---")
     green  = results[results["Quality"] == "Green Light"]
     caution= results[results["Quality"] == "Caution"]
     insp   = results[results["Quality"] == "Inspect First"]
     nodeal = results[results["Quality"] == "No Deal"]
 
     m1, m2, m3, m4, m5 = st.columns(5)
-    m1.metric("Properties", len(results))
-    m2.metric("Green Light",  len(green),   help="Viable deal, no red flags")
-    m3.metric("Caution",      len(caution), help="Viable but shows distress signals")
-    m4.metric("Inspect First",len(insp),    help="Critical flags or offer far below list")
-    m5.metric("No Deal",      len(nodeal),  help="DSCR math doesn't work at target cashflow")
+    m1.metric("Total Analyzed", len(results))
+    m2.metric("🟢 Green Light",  len(green),   help="Viable deal, no red flags")
+    m3.metric("🟡 Caution",      len(caution), help="Viable but shows distress keywords")
+    m4.metric("🔴 Inspect First",len(insp),    help="Offer >> list price or critical damage")
+    m5.metric("⛔ No Deal",      len(nodeal),  help="Math doesn't work at target cashflow")
 
     # ── Results table ──
-    st.markdown('<div class="section-label" style="margin-top:28px;">Results Table</div>', unsafe_allow_html=True)
+    st.markdown("### 📊 Results")
 
     quality_order = {"Green Light": 0, "Caution": 1, "Inspect First": 2, "No Deal": 3}
     results_sorted = results.copy()
@@ -1257,10 +966,10 @@ if uploaded:
 
     def color_row(row):
         q = row.get("Quality", "")
-        if q == "Green Light":   return ["background-color:#0d2b1a; color:#c8e6d0"] * len(row)
-        if q == "Caution":       return ["background-color:#2a2210; color:#e8d8a0"] * len(row)
-        if q == "Inspect First": return ["background-color:#2a1010; color:#e8b0b0"] * len(row)
-        return                          ["background-color:#16181f; color:#4a4a5e"] * len(row)
+        if q == "Green Light":   return ["background-color:#d1e7dd"] * len(row)
+        if q == "Caution":       return ["background-color:#fff3cd"] * len(row)
+        if q == "Inspect First": return ["background-color:#f8d7da"] * len(row)
+        return                          ["background-color:#f8f9fa; color:#6c757d"] * len(row)
 
     st.dataframe(
         results_sorted[display_cols].style
@@ -1279,84 +988,79 @@ if uploaded:
     # ── Deal detail expanders ──
     viable_sorted = results_sorted[results_sorted["Quality"] != "No Deal"]
     if not viable_sorted.empty:
-        st.markdown('<div class="section-label" style="margin-top:28px;">Deal Breakdown</div>', unsafe_allow_html=True)
+        st.markdown("### 🔍 Deal Breakdown")
         for _, r in viable_sorted.iterrows():
-            pill = {
-                "Green Light":  '<span class="pill-green">Green Light</span>',
-                "Caution":      '<span class="pill-yellow">Caution</span>',
-                "Inspect First":'<span class="pill-red">Inspect First</span>',
-            }.get(r["Quality"], "")
+            icon = {"Green Light":"🟢","Caution":"🟡","Inspect First":"🔴"}.get(r["Quality"],"⚪")
             spread = r["Your Offer"] - r["List Price"]
-            spread_color = "#4caf72" if spread >= 0 else "#e07080"
-            label = (
-                f"{r['Address']}  ·  "
-                f"Offer: ${r['Your Offer']:,.0f}  ·  "
-                f"List: ${r['List Price']:,.0f}  ·  "
-                f"Spread: ${spread:+,.0f}"
+            label  = (
+                f"{icon} {r['Address']}  |  "
+                f"Your Offer: **${r['Your Offer']:,.0f}**  |  "
+                f"List: ${r['List Price']:,.0f}  |  "
+                f"Spread vs list: ${spread:+,.0f}"
             )
             with st.expander(label):
-                st.markdown(f'{pill}', unsafe_allow_html=True)
-                st.markdown("")
-
                 # Row 1: Price stack
                 c1, c2, c3, c4 = st.columns(4)
-                c1.metric("List Price",         f"${r['List Price']:,.0f}")
-                c1.metric("Section 8 Rent",     f"${r['S8 Rent ($/mo)']:,.0f}/mo")
-                c2.metric("Max Buyer Price",    f"${r['Max Buyer Price']:,.0f}",
-                          help="Capped at list price − $10k. What your end buyer pays.")
-                c2.metric("DSCR Math Supports", f"${r['DSCR Max (uncapped)']:,.0f}",
-                          help="What the DSCR formula alone supports — context only.")
-                c3.metric("Your Offer",         f"${r['Your Offer']:,.0f}",
-                          help="Your wholesale contract price = Buyer price − fee − closing")
-                c3.metric("Assignment Fee",     f"${r['Wholesale Fee']:,.0f}")
-                c4.metric("Down Payment",       f"${r['Down Payment']:,.0f}")
-                c4.metric("Closing Costs",      f"${r['Closing Costs']:,.0f}")
+                c1.metric("List Price",        f"${r['List Price']:,.0f}")
+                c1.metric("S8 Rent",           f"${r['S8 Rent ($/mo)']:,.0f}/mo")
+                c2.metric("Max Buyer Price",   f"${r['Max Buyer Price']:,.0f}",
+                          help="Capped at list price − $10k minimum. This is what your end buyer pays.")
+                c2.metric("DSCR Math Supports",f"${r['DSCR Max (uncapped)']:,.0f}",
+                          help="What the DSCR formula alone supports — shown for context only.")
+                c3.metric("Your Offer (to seller)", f"${r['Your Offer']:,.0f}",
+                          help="Your wholesale contract price = Buyer price − fee − closing costs")
+                c3.metric("Wholesale Fee",     f"${r['Wholesale Fee']:,.0f}")
+                c4.metric("Down Payment",      f"${r['Down Payment']:,.0f}")
+                c4.metric("Closing Costs",     f"${r['Closing Costs']:,.0f}")
 
                 # Row 2: Monthly breakdown
-                st.markdown('<div class="section-label" style="margin-top:16px;">Monthly Cash Flow (Buyer)</div>', unsafe_allow_html=True)
-                ec1, ec2, ec3, ec4, ec5 = st.columns(5)
-                ec1.metric("S8 Rent In",    f"${r['S8 Rent ($/mo)']:,.0f}/mo")
-                ec2.metric("Mortgage",      f"${r['Monthly Mortgage']:,.0f}/mo")
-                ec3.metric("Taxes",         f"${r['Monthly Taxes']:,.0f}/mo")
-                ec4.metric("Insurance",     f"${r['Monthly Insurance']:,.0f}/mo")
-                ec5.metric("Net Cashflow",  f"${r['Est. Buyer CF ($/mo)']:,.0f}/mo",
-                           help="After mortgage, taxes, insurance, vacancy, maintenance, mgmt")
+                st.markdown("**Monthly Expense Breakdown (buyer's perspective at max buyer price)**")
+                ec1, ec2, ec3, ec4 = st.columns(4)
+                ec1.metric("S8 Rent In",   f"${r['S8 Rent ($/mo)']:,.0f}/mo")
+                ec2.metric("Mortgage",     f"${r['Monthly Mortgage']:,.0f}/mo")
+                ec3.metric("Taxes",        f"${r['Monthly Taxes']:,.0f}/mo")
+                ec4.metric("Insurance",    f"${r['Monthly Insurance']:,.0f}/mo")
+                st.metric("Est. Buyer Cashflow", f"${r['Est. Buyer CF ($/mo)']:,.0f}/mo",
+                          help="After mortgage, taxes, insurance, vacancy, maintenance, mgmt")
 
-                # ZIP market context
-                st.markdown('<div class="section-label" style="margin-top:16px;">ZIP Market Intelligence</div>', unsafe_allow_html=True)
-                zc1, zc2, zc3, zc4, zc5 = st.columns(5)
-                zc1.metric("ZIP Median Value",  f"${r['Zip Median Home Value']:,.0f}" if r['Zip Median Home Value'] else "N/A")
-                zc2.metric("Price vs Median",   r['Price vs Zip Median'])
-                zc3.metric("ZIP Vacancy Rate",  f"{r['Zip Vacancy Rate (%)']:.1f}%")
-                if r.get("Days on Market"):
-                    zc4.metric("Days on Market", r["Days on Market"])
-                if r.get("Price Reduction"):
-                    zc5.metric("Price Cut", r["Price Reduction"])
+                # ZIP market context (from Census ACS — free)
+                st.markdown("**ZIP Market Context (US Census ACS)**")
+                zc1, zc2, zc3 = st.columns(3)
+                zc1.metric("Zip Median Home Value", f"${r['Zip Median Home Value']:,.0f}" if r['Zip Median Home Value'] else "N/A")
+                zc2.metric("Price vs Zip Median",   r['Price vs Zip Median'])
+                zc3.metric("Zip Vacancy Rate",       f"{r['Zip Vacancy Rate (%)']:.1f}%")
 
                 # Condition & flags
-                st.markdown('<div class="section-label" style="margin-top:16px;">Condition & Flags</div>', unsafe_allow_html=True)
-                cond_color = {"Critical":"#e07080","Needs Work":"#c9a84c","Likely Distressed":"#e07080","Possibly Distressed":"#c9a84c","Good":"#4caf72"}.get(r["Condition"], "#8a8a9a")
-                st.markdown(f'<span style="font-size:13px; font-weight:600; color:{cond_color};">■ {r["Condition"]}</span>', unsafe_allow_html=True)
+                st.markdown(f"**Condition:** {r['Condition']}")
                 if r["Inspection Flags"]:
                     flag_lower = r["Inspection Flags"].lower()
                     css = "flag-critical" if "critical" in flag_lower else ("flag-inspect" if "inspect" in flag_lower else "flag-rehab")
-                    st.markdown(f"<div class='{css}'>⚠ {r['Inspection Flags']}</div>", unsafe_allow_html=True)
-                if r.get("Tax Assessed Value") and isinstance(r["Tax Assessed Value"], (int, float)) and r["Tax Assessed Value"]:
-                    st.markdown(f'<div style="font-size:12px; color:#5a5a6e; margin-top:4px;">Tax Assessed Value: ${r["Tax Assessed Value"]:,.0f}</div>', unsafe_allow_html=True)
+                    st.markdown(f"<div class='{css}'>⚠️ {r['Inspection Flags']}</div>", unsafe_allow_html=True)
+
+                # Zillow listing signals
+                zil_row1, zil_row2, zil_row3 = st.columns(3)
+                if r.get("Days on Market"):
+                    zil_row1.metric("Days on Market", r["Days on Market"])
+                if r.get("Price Reduction"):
+                    zil_row2.metric("Price Reduction", r["Price Reduction"])
+                if r.get("Tax Assessed Value"):
+                    zil_row3.metric("Tax Assessed Value", f"${r['Tax Assessed Value']:,.0f}" if isinstance(r['Tax Assessed Value'], (int, float)) and r['Tax Assessed Value'] else "N/A")
                 if r.get("Zillow Insight"):
-                    st.markdown(f'<div class="zillow-insight">💡 Zillow Insight: {r["Zillow Insight"]}</div>', unsafe_allow_html=True)
+                    st.info(f"💡 **Zillow Insight:** {r['Zillow Insight']}")
+
                 if r["Listing Description"]:
-                    st.markdown(f'<div style="font-size:12px; color:#6a6a7a; background:#16181f; border:1px solid #2a2d3a; border-radius:6px; padding:10px 14px; margin-top:8px;">📋 {r["Listing Description"][:400]}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div style="font-size:11px; color:#3a3a4e; margin-top:8px;">Rent: {r["Rent Source"]}  ·  Description: {r["Desc Source"]}</div>', unsafe_allow_html=True)
+                    st.caption(f"📋 **Listing Description:** {r['Listing Description'][:400]}")
+                st.caption(f"Rent source: {r['Rent Source']}  |  Description source: {r['Desc Source']}")
 
     # ── Exports ──
-    st.markdown('<div class="section-label" style="margin-top:28px;">Export</div>', unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("### ⬇️ Export")
     ec1, ec2 = st.columns(2)
 
     with ec1:
         csv_all = results_sorted.to_csv(index=False).encode("utf-8")
         st.download_button(
-            "⬇  Export All Properties",
+            "Export ALL Properties (CSV)",
             csv_all,
             "section8_all_offers.csv",
             "text/csv",
@@ -1367,7 +1071,7 @@ if uploaded:
         good = results_sorted[results_sorted["Quality"].isin(["Green Light","Caution"])]
         csv_good = good.to_csv(index=False).encode("utf-8")
         st.download_button(
-            f"⬇  Export Good Deals Only  ({len(good)})",
+            f"Export Green Light + Caution Only ({len(good)} deals) (CSV)",
             csv_good,
             "section8_good_offers.csv",
             "text/csv",
@@ -1376,15 +1080,10 @@ if uploaded:
         )
 
 else:
-    st.markdown("""
-<div style="margin-top:72px; text-align:center;">
-  <div style="background:#f8b319; width:56px; height:56px; border-radius:16px; display:inline-flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:20px;">💎</div>
-  <div style="font-family:'Oswald',sans-serif; font-size:24px; font-weight:600; color:#e2e2e8; letter-spacing:0.5px; margin-bottom:10px;">Ready to Underwrite</div>
-  <div style="font-family:'Manrope',sans-serif; font-size:13px; color:#40405a; max-width:400px; margin:0 auto; line-height:1.8;">
-    Upload a CSV or Excel file with your property list.<br>
-    Required: <span style="color:#f8b319; font-weight:600;">Address &nbsp;·&nbsp; Zip &nbsp;·&nbsp; Bedrooms &nbsp;·&nbsp; List Price</span><br>
-    Optional: <span style="color:#f8b319; font-weight:600;">Description</span> column for keyword analysis.<br>
-    <span style="color:#303048;">Properties under $20,000 are automatically excluded.</span>
-  </div>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown("### Ready — upload your property list to begin")
+    st.markdown(
+        "**Required CSV columns:** `Address` · `Zip` · `Bedrooms` · `List Price`\n\n"
+        "**Optional:** `Description` — if you include this, the app skips Zillow scraping for that row "
+        "and uses your text directly for condition analysis.\n\n"
+        "Properties listed under **$20,000** are automatically excluded."
+    )
