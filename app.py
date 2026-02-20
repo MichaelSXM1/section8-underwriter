@@ -584,6 +584,51 @@ def get_listing_description(address: str, api_key: str = "") -> tuple[str, str]:
 
 
 # ─────────────────────────────────────────────
+# ESTIMATED REPAIRS
+# Based on condition label + sqft (if known).
+# These are rough wholesale ranges, not contractor bids.
+# ─────────────────────────────────────────────
+def estimate_repairs(condition: str, sqft: float = 0, list_price: float = 0) -> tuple[int, int, str]:
+    """
+    Returns (low_estimate, high_estimate, repair_tier_label).
+    Estimates are per-sqft ranges based on condition tier.
+    If sqft unknown, uses list_price-based heuristic fallback.
+    """
+    # Per-sqft repair cost ranges by condition
+    # Source: typical wholesale/rehab industry ranges
+    tiers = {
+        "Good":             (0,    5,    "Light / Cosmetic"),
+        "Needs Work":       (10,   30,   "Moderate Rehab"),
+        "Critical":         (35,   65,   "Heavy / Full Rehab"),
+        "Likely Distressed":(25,   55,   "Probable Major Rehab"),
+        "Possibly Distressed":(8,  25,   "Unknown — Inspect"),
+        "Unknown":          (5,    20,   "Unknown — Inspect"),
+    }
+    low_psf, high_psf, label = tiers.get(condition, (5, 20, "Unknown — Inspect"))
+
+    if sqft > 0:
+        low  = round(low_psf  * sqft / 1000) * 1000   # round to nearest $1k
+        high = round(high_psf * sqft / 1000) * 1000
+    elif list_price > 0:
+        # Fallback: use % of list price when sqft unknown
+        fallback_pcts = {
+            "Good":               (0.00, 0.03),
+            "Needs Work":         (0.05, 0.15),
+            "Critical":           (0.20, 0.40),
+            "Likely Distressed":  (0.15, 0.30),
+            "Possibly Distressed":(0.05, 0.15),
+            "Unknown":            (0.03, 0.10),
+        }
+        lo_pct, hi_pct = fallback_pcts.get(condition, (0.03, 0.10))
+        low  = round(list_price * lo_pct / 1000) * 1000
+        high = round(list_price * hi_pct / 1000) * 1000
+    else:
+        low, high = 0, 0
+
+    return low, high, label
+
+
+# ─────────────────────────────────────────────
 # DSCR OFFER CALCULATOR
 # ─────────────────────────────────────────────
 def calculate_dscr_offer(
@@ -690,8 +735,8 @@ col_up, col_info = st.columns([2, 1])
 with col_up:
     uploaded = st.file_uploader("Upload Property CSV / Excel", type=["csv", "xlsx"])
     st.caption(
-        "**Required:** `Address` · `Zip` · `Bedrooms` · `List Price`  |  "
-        "**Optional:** `Description` (skips Zillow scrape for that row)"
+        "**Required:** `Address` (or `Street` + `City` + `State`) · `Zip` · `Bedrooms` · `List Price`  |  "
+        "**Optional:** `Sqft` · `Agent Name` · `Agent Email` · `Description`"
     )
 
 with col_info:
@@ -716,13 +761,18 @@ with col_info:
         icon="ℹ️"
     )
 
-# Sample CSV
+# Sample CSV — shows split address format with agent info and sqft
 sample = pd.DataFrame({
-    "Address":    ["3820 Guilford Ave, Indianapolis, IN 46205", "456 Oak Ave, Indianapolis, IN 46218"],
-    "Zip":        [46205, 46218],
-    "Bedrooms":   [3, 4],
-    "List Price": [95000, 120000],
-    "Description":["", ""],
+    "Street":      ["3820 Guilford Ave", "456 Oak Ave"],
+    "City":        ["Indianapolis", "Indianapolis"],
+    "State":       ["IN", "IN"],
+    "Zip":         [46205, 46218],
+    "Bedrooms":    [3, 4],
+    "Sqft":        [1250, 1600],
+    "List Price":  [95000, 120000],
+    "Agent Name":  ["Jane Smith", "Bob Johnson"],
+    "Agent Email": ["jane@realty.com", "bob@realty.com"],
+    "Description": ["", ""],
 })
 st.download_button("⬇️ Download Sample CSV", sample.to_csv(index=False).encode(),
                    "sample_properties.csv", "text/csv")
@@ -745,14 +795,47 @@ if uploaded:
     col_map = {}
     for c in raw.columns:
         cl = c.lower().replace(" ", "").replace("_", "")
-        if cl in ("address","addr","streetaddress","propertyaddress"):   col_map[c] = "Address"
-        elif cl in ("zip","zipcode","zip_code","postalcode","postal"):   col_map[c] = "Zip"
-        elif cl in ("bedrooms","beds","bed","br","bdrms","bdrm"):        col_map[c] = "Bedrooms"
+        if cl in ("address","addr","streetaddress","propertyaddress","street","streetaddr"):
+            col_map[c] = "Street"
+        elif cl in ("city","cityname"):                                   col_map[c] = "City"
+        elif cl in ("state","st","statecode"):                            col_map[c] = "State"
+        elif cl in ("zip","zipcode","zip_code","postalcode","postal"):    col_map[c] = "Zip"
+        elif cl in ("bedrooms","beds","bed","br","bdrms","bdrm"):         col_map[c] = "Bedrooms"
         elif cl in ("listprice","price","mlsamount","askingprice",
-                    "listingprice","amount","saleprice","list"):          col_map[c] = "List Price"
+                    "listingprice","amount","saleprice","list"):           col_map[c] = "List Price"
         elif cl in ("description","desc","remarks","publicremarks",
-                    "notes","listingremarks","agentremarks"):             col_map[c] = "Description"
+                    "notes","listingremarks","agentremarks"):              col_map[c] = "Description"
+        elif cl in ("sqft","squarefeet","squarefootage","livingarea",
+                    "livingsqft","sf","size"):                             col_map[c] = "Sqft"
+        elif cl in ("agentname","agent","agentfirstname","listingagent",
+                    "realtorname","brokeragent"):                          col_map[c] = "Agent Name"
+        elif cl in ("agentemail","email","agentcontact",
+                    "realtoremail","brokeragemail"):                       col_map[c] = "Agent Email"
     raw = raw.rename(columns=col_map)
+
+    # ── Build full Address from split columns if needed ──
+    # If the CSV has Street + City + State + Zip as separate columns, combine them.
+    # If the CSV already has a combined "Street" (or "Address") column with city/state
+    # embedded (e.g. "123 Main St, Orlando, FL 32801"), that works too.
+    if "Street" in raw.columns and "Address" not in raw.columns:
+        city_part  = raw["City"].astype(str).str.strip()  if "City"  in raw.columns else ""
+        state_part = raw["State"].astype(str).str.strip() if "State" in raw.columns else ""
+        zip_part   = raw["Zip"].astype(str).str.strip()   if "Zip"   in raw.columns else ""
+        # Build: "123 Main St, Orlando, FL 32801"
+        raw["Address"] = (
+            raw["Street"].astype(str).str.strip()
+            + raw.apply(lambda r: f", {r['City']}"  if "City"  in raw.columns and str(r.get("City","")).strip()  else "", axis=1)
+            + raw.apply(lambda r: f", {r['State']}" if "State" in raw.columns and str(r.get("State","")).strip() else "", axis=1)
+            + raw.apply(lambda r: f" {r['Zip']}"    if "Zip"   in raw.columns and str(r.get("Zip","")).strip()   else "", axis=1)
+        )
+    elif "Street" in raw.columns:
+        # "Street" is really the full address
+        raw = raw.rename(columns={"Street": "Address"})
+
+    # If Zip wasn't its own column but was embedded in Address, try to extract it
+    if "Zip" not in raw.columns and "Address" in raw.columns:
+        zip_extracted = raw["Address"].str.extract(r'(\d{5})(?:-\d{4})?$')[0]
+        raw["Zip"] = zip_extracted.fillna("00000")
 
     missing_req = [r for r in ["Address","Zip","Bedrooms","List Price"] if r not in raw.columns]
     if missing_req:
@@ -762,6 +845,10 @@ if uploaded:
     for col in ["List Price","Bedrooms","Zip"]:
         raw[col] = raw[col].astype(str).str.replace(r"[$,]","",regex=True)
         raw[col] = pd.to_numeric(raw[col], errors="coerce").fillna(0)
+
+    if "Sqft" in raw.columns:
+        raw["Sqft"] = raw["Sqft"].astype(str).str.replace(r"[$,]","",regex=True)
+        raw["Sqft"] = pd.to_numeric(raw["Sqft"], errors="coerce").fillna(0)
 
     # ── Filter sub-$20k ──
     below_20k = raw[raw["List Price"] < 20000]
@@ -789,6 +876,11 @@ if uploaded:
         zip_str = str(int(row["Zip"])).zfill(5)
         beds    = int(row["Bedrooms"]) if row["Bedrooms"] > 0 else 3
 
+        # Pass-through fields (agent info, sqft from CSV or Zillow)
+        agent_name  = str(row.get("Agent Name",  "")).strip() if "Agent Name"  in raw.columns else ""
+        agent_email = str(row.get("Agent Email", "")).strip() if "Agent Email" in raw.columns else ""
+        csv_sqft    = float(row["Sqft"]) if "Sqft" in raw.columns and row["Sqft"] > 0 else 0
+
         # 1. Section 8 rent
         s8_rent, rent_src = get_section8_rent(zip_str, beds, safmr_df)
 
@@ -805,9 +897,43 @@ if uploaded:
             description, desc_src = get_listing_description(addr, rentcast_key)
             time.sleep(0.3)  # gentle rate limit for Rentcast free tier
 
+        # 1b. Sqft adjustment to Section 8 rent
+        # HUD SAFMRs are bedroom-based, but sqft can modestly affect achievable rent.
+        # HUD uses a general standard: ~600 sqft for studios, +150 sqft per bedroom.
+        # If the property is significantly under the HUD standard, apply a small penalty.
+        # If significantly over, apply a small premium (capped at +10%).
+        # This only applies when we have sqft data.
+        sqft_note = ""
+        if csv_sqft > 0:
+            # HUD standard sqft per bedroom count (approximate)
+            hud_sqft_standard = {0: 600, 1: 750, 2: 900, 3: 1100, 4: 1300}
+            standard = hud_sqft_standard.get(min(beds, 4), 900)
+            sqft_ratio = csv_sqft / standard if standard > 0 else 1.0
+            if sqft_ratio < 0.70:
+                # Very undersized — PHAs and tenants will discount this
+                adj_pct = -0.08
+                sqft_note = f"⬇ Sqft {csv_sqft:.0f} is {(1-sqft_ratio)*100:.0f}% below HUD standard ({standard} sqft) — rent adjusted -8%"
+            elif sqft_ratio < 0.85:
+                adj_pct = -0.04
+                sqft_note = f"Sqft {csv_sqft:.0f} slightly below HUD standard ({standard} sqft) — rent adjusted -4%"
+            elif sqft_ratio > 1.40:
+                adj_pct = 0.07
+                sqft_note = f"⬆ Sqft {csv_sqft:.0f} is well above HUD standard ({standard} sqft) — rent adjusted +7%"
+            elif sqft_ratio > 1.20:
+                adj_pct = 0.04
+                sqft_note = f"Sqft {csv_sqft:.0f} above HUD standard ({standard} sqft) — rent adjusted +4%"
+            else:
+                adj_pct = 0.0
+            if adj_pct != 0.0:
+                s8_rent = round(s8_rent * (1 + adj_pct))
+                rent_src = rent_src + f" (sqft adj {adj_pct:+.0%})"
+
         # 2b. Zillow listing signals (free — no API key, no bot detection)
         zillow_signals = fetch_zillow_listing_signals(addr)
         zil_condition, zil_signal_strs = analyze_zillow_signals(zillow_signals)
+
+        # Use Zillow sqft if CSV didn't provide it
+        sqft = csv_sqft if csv_sqft > 0 else (zillow_signals.get("sqft") or 0)
 
         # 3. Condition (from description keywords first, Zillow signals as fallback)
         condition, kw_hits = analyze_condition(description)
@@ -900,31 +1026,62 @@ if uploaded:
         else:
             quality = "Green Light"
 
+        # Estimated repairs
+        repair_low, repair_high, repair_tier = estimate_repairs(condition, sqft, list_price)
+        repair_range_str = f"${repair_low:,.0f} – ${repair_high:,.0f}" if (repair_low or repair_high) else "Unknown"
+
+        # Sqft note for export
+        if not sqft_note and sqft > 0:
+            sqft_note = f"{sqft:.0f} sqft"
+
         rows_out.append({
+            # ── Identifiers ──
             "Quality":              quality,
             "Address":              addr,
             "Zip":                  zip_str,
             "Beds":                 beds,
+            "Sqft":                 int(sqft) if sqft else "",
+            "Agent Name":           agent_name,
+            "Agent Email":          agent_email,
+
+            # ── Pricing ──
             "List Price":           list_price,
-            "S8 Rent ($/mo)":       s8_rent,
+            "Section 8 Rent ($/mo)":s8_rent,
             "Rent Source":          rent_src,
-            "Zip Median Home Value":census_data.get("median_home_value", 0),
-            "Zip Vacancy Rate (%)": census_data.get("vacancy_rate_pct", 0),
-            "Price vs Zip Median":  f"{(list_price/census_data['median_home_value']*100):.0f}%" if census_data.get("median_home_value") else "N/A",
-            "Your Offer":           calc.get("your_offer", 0),
-            "Max Buyer Price":      calc.get("max_buyer_price", 0),
+            "Sqft Rent Note":       sqft_note,
+
+            # ── Wholesale Offer Stack ──
+            "Your Max Offer":       calc.get("your_offer", 0),
+            "Buyer Max Purchase":   calc.get("max_buyer_price", 0),
             "DSCR Max (uncapped)":  calc.get("dscr_max_price", 0),
-            "Wholesale Fee":        calc.get("wholesale_fee", 0),
-            "Closing Costs":        calc.get("closing_costs", 0),
-            "Down Payment":         calc.get("down_payment", 0),
-            "Loan Amount":          calc.get("loan_amount", 0),
-            "Est. Buyer CF ($/mo)": calc.get("actual_cf", 0),
+            "Your Wholesale Fee":   calc.get("wholesale_fee", 0),
+            "Buyer Closing Costs":  calc.get("closing_costs", 0),
+            "Buyer Down Payment":   calc.get("down_payment", 0),
+            "Buyer Loan Amount":    calc.get("loan_amount", 0),
+
+            # ── Monthly Cash Flow ──
+            "Est Buyer CF ($/mo)":  calc.get("actual_cf", 0),
             "Monthly Mortgage":     calc.get("mortgage_pmt", 0),
             "Monthly Taxes":        calc.get("taxes_mo", 0),
             "Monthly Insurance":    calc.get("insurance_mo", 0),
+
+            # ── Repairs ──
+            "Est Repairs":          repair_range_str,
+            "Repair Low ($)":       repair_low,
+            "Repair High ($)":      repair_high,
+            "Repair Tier":          repair_tier,
+
+            # ── Market Context ──
+            "Zip Median Home Value":census_data.get("median_home_value", 0),
+            "Zip Vacancy Rate (%)": census_data.get("vacancy_rate_pct", 0),
+            "Price vs Zip Median":  f"{(list_price/census_data['median_home_value']*100):.0f}%" if census_data.get("median_home_value") else "N/A",
+
+            # ── Condition ──
             "Condition":            condition,
             "Distress Keywords":    ", ".join(kw_hits[:6]),
             "Inspection Flags":     flag_str,
+
+            # ── Listing Data ──
             "Listing Description":  (description[:400] if description else ""),
             "Zillow Insight":       zillow_signals.get("flex_text", ""),
             "Days on Market":       zillow_signals.get("days_on_market", ""),
@@ -959,10 +1116,12 @@ if uploaded:
     results_sorted = results_sorted.sort_values("_sort").drop(columns="_sort")
 
     display_cols = [
-        "Quality", "Address", "Beds", "List Price",
-        "Price vs Zip Median", "S8 Rent ($/mo)", "Your Offer", "Max Buyer Price",
-        "Est. Buyer CF ($/mo)", "Condition", "Inspection Flags"
+        "Quality", "Address", "Beds", "Sqft", "List Price",
+        "Price vs Zip Median", "Section 8 Rent ($/mo)", "Your Max Offer", "Buyer Max Purchase",
+        "Est Repairs", "Est Buyer CF ($/mo)", "Condition", "Inspection Flags"
     ]
+    # Only keep display cols that exist (Sqft may be empty)
+    display_cols = [c for c in display_cols if c in results_sorted.columns]
 
     def color_row(row):
         q = row.get("Quality", "")
@@ -971,16 +1130,17 @@ if uploaded:
         if q == "Inspect First": return ["background-color:#f8d7da"] * len(row)
         return                          ["background-color:#f8f9fa; color:#6c757d"] * len(row)
 
+    fmt = {
+        "List Price":             "${:,.0f}",
+        "Section 8 Rent ($/mo)":  "${:,.0f}",
+        "Your Max Offer":         "${:,.0f}",
+        "Buyer Max Purchase":     "${:,.0f}",
+        "Est Buyer CF ($/mo)":    "${:,.0f}",
+    }
     st.dataframe(
         results_sorted[display_cols].style
             .apply(color_row, axis=1)
-            .format({
-                "List Price":           "${:,.0f}",
-                "S8 Rent ($/mo)":       "${:,.0f}",
-                "Your Offer":           "${:,.0f}",
-                "Max Buyer Price":      "${:,.0f}",
-                "Est. Buyer CF ($/mo)": "${:,.0f}",
-            }),
+            .format({k: v for k, v in fmt.items() if k in display_cols}),
         use_container_width=True,
         height=520,
     )
@@ -991,37 +1151,54 @@ if uploaded:
         st.markdown("### 🔍 Deal Breakdown")
         for _, r in viable_sorted.iterrows():
             icon = {"Green Light":"🟢","Caution":"🟡","Inspect First":"🔴"}.get(r["Quality"],"⚪")
-            spread = r["Your Offer"] - r["List Price"]
+            spread = r["Your Max Offer"] - r["List Price"]
+            sqft_display = f"  |  {int(r['Sqft'])} sqft" if r.get("Sqft") else ""
             label  = (
-                f"{icon} {r['Address']}  |  "
-                f"Your Offer: **${r['Your Offer']:,.0f}**  |  "
+                f"{icon} {r['Address']}{sqft_display}  |  "
+                f"Your Offer: **${r['Your Max Offer']:,.0f}**  |  "
                 f"List: ${r['List Price']:,.0f}  |  "
                 f"Spread vs list: ${spread:+,.0f}"
             )
             with st.expander(label):
                 # Row 1: Price stack
                 c1, c2, c3, c4 = st.columns(4)
-                c1.metric("List Price",        f"${r['List Price']:,.0f}")
-                c1.metric("S8 Rent",           f"${r['S8 Rent ($/mo)']:,.0f}/mo")
-                c2.metric("Max Buyer Price",   f"${r['Max Buyer Price']:,.0f}",
+                c1.metric("List Price",             f"${r['List Price']:,.0f}")
+                c1.metric("Section 8 Rent",         f"${r['Section 8 Rent ($/mo)']:,.0f}/mo")
+                c2.metric("Buyer Max Purchase",      f"${r['Buyer Max Purchase']:,.0f}",
                           help="Capped at list price − $10k minimum. This is what your end buyer pays.")
-                c2.metric("DSCR Math Supports",f"${r['DSCR Max (uncapped)']:,.0f}",
+                c2.metric("DSCR Math Supports",     f"${r['DSCR Max (uncapped)']:,.0f}",
                           help="What the DSCR formula alone supports — shown for context only.")
-                c3.metric("Your Offer (to seller)", f"${r['Your Offer']:,.0f}",
+                c3.metric("Your Max Offer (to seller)", f"${r['Your Max Offer']:,.0f}",
                           help="Your wholesale contract price = Buyer price − fee − closing costs")
-                c3.metric("Wholesale Fee",     f"${r['Wholesale Fee']:,.0f}")
-                c4.metric("Down Payment",      f"${r['Down Payment']:,.0f}")
-                c4.metric("Closing Costs",     f"${r['Closing Costs']:,.0f}")
+                c3.metric("Your Wholesale Fee",     f"${r['Your Wholesale Fee']:,.0f}")
+                c4.metric("Buyer Down Payment",     f"${r['Buyer Down Payment']:,.0f}")
+                c4.metric("Buyer Closing Costs",    f"${r['Buyer Closing Costs']:,.0f}")
 
-                # Row 2: Monthly breakdown
-                st.markdown("**Monthly Expense Breakdown (buyer's perspective at max buyer price)**")
+                # Row 2: Repairs + Sqft
+                st.markdown("**Property Details & Estimated Repairs**")
+                rep1, rep2, rep3 = st.columns(3)
+                rep1.metric("Sqft",           str(int(r["Sqft"])) if r.get("Sqft") else "Unknown")
+                rep2.metric("Est. Repairs",   r.get("Est Repairs", "Unknown"),
+                            help="Rough wholesale estimate based on condition + sqft. Not a contractor bid.")
+                rep3.metric("Repair Tier",    r.get("Repair Tier", "—"))
+                if r.get("Sqft Rent Note"):
+                    st.caption(f"🏠 Sqft note: {r['Sqft Rent Note']}")
+
+                # Row 3: Monthly breakdown
+                st.markdown("**Monthly Cash Flow (buyer's perspective at max purchase price)**")
                 ec1, ec2, ec3, ec4 = st.columns(4)
-                ec1.metric("S8 Rent In",   f"${r['S8 Rent ($/mo)']:,.0f}/mo")
-                ec2.metric("Mortgage",     f"${r['Monthly Mortgage']:,.0f}/mo")
-                ec3.metric("Taxes",        f"${r['Monthly Taxes']:,.0f}/mo")
-                ec4.metric("Insurance",    f"${r['Monthly Insurance']:,.0f}/mo")
-                st.metric("Est. Buyer Cashflow", f"${r['Est. Buyer CF ($/mo)']:,.0f}/mo",
+                ec1.metric("S8 Rent In",      f"${r['Section 8 Rent ($/mo)']:,.0f}/mo")
+                ec2.metric("Mortgage",         f"${r['Monthly Mortgage']:,.0f}/mo")
+                ec3.metric("Taxes",            f"${r['Monthly Taxes']:,.0f}/mo")
+                ec4.metric("Insurance",        f"${r['Monthly Insurance']:,.0f}/mo")
+                st.metric("Est. Buyer Cashflow", f"${r['Est Buyer CF ($/mo)']:,.0f}/mo",
                           help="After mortgage, taxes, insurance, vacancy, maintenance, mgmt")
+
+                # Agent info if available
+                if r.get("Agent Name") or r.get("Agent Email"):
+                    ag1, ag2 = st.columns(2)
+                    if r.get("Agent Name"):  ag1.caption(f"👤 **Agent:** {r['Agent Name']}")
+                    if r.get("Agent Email"): ag2.caption(f"📧 **Email:** {r['Agent Email']}")
 
                 # ZIP market context (from Census ACS — free)
                 st.markdown("**ZIP Market Context (US Census ACS)**")
@@ -1082,8 +1259,12 @@ if uploaded:
 else:
     st.markdown("### Ready — upload your property list to begin")
     st.markdown(
-        "**Required CSV columns:** `Address` · `Zip` · `Bedrooms` · `List Price`\n\n"
-        "**Optional:** `Description` — if you include this, the app skips Zillow scraping for that row "
-        "and uses your text directly for condition analysis.\n\n"
+        "**Required columns:** `Address` (or split as `Street` + `City` + `State`) · `Zip` · `Bedrooms` · `List Price`\n\n"
+        "**Optional columns:**\n"
+        "- `Sqft` — improves Section 8 rent accuracy (adjusts HUD SAFMR up/down based on size vs. HUD standard)\n"
+        "- `Agent Name` / `Agent Email` — passed through to export unchanged\n"
+        "- `Description` — listing remarks for keyword-based condition analysis\n\n"
+        "**Export includes:** Your Max Offer · Buyer Max Purchase · Section 8 Rent · Est. Repairs · "
+        "Monthly cashflow breakdown · All agent/sqft pass-through fields.\n\n"
         "Properties listed under **$20,000** are automatically excluded."
     )
