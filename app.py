@@ -29,21 +29,57 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Clean card look for metrics */
+/* Metric cards — dark theme compatible */
 div[data-testid="metric-container"] {
-    background: #f8f9fa;
+    background: #1a1c24;
     border-radius: 8px;
     padding: 12px 16px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #2e3048;
 }
-/* Color‑coded inspection badges in the table */
-.badge-critical  { color:#842029; background:#f8d7da; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-.badge-inspect   { color:#664d03; background:#fff3cd; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-.badge-good      { color:#0f5132; background:#d1e7dd; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-/* Expander detail flags */
-.flag-critical { background-color:#f8d7da; border-left:4px solid #dc3545; padding:8px 12px; border-radius:4px; margin:4px 0; }
-.flag-inspect  { background-color:#fff3cd; border-left:4px solid #ffc107; padding:8px 12px; border-radius:4px; margin:4px 0; }
-.flag-rehab    { background-color:#e2e3e5; border-left:4px solid #6c757d; padding:8px 12px; border-radius:4px; margin:4px 0; }
+div[data-testid="metric-container"] label {
+    color: #9090a8 !important;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: #e2e2e8 !important;
+    font-weight: 600;
+}
+
+/* Color‑coded inspection badges */
+.badge-critical  { color:#ffc5c5 !important; background:#5a1a1a; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+.badge-inspect   { color:#ffe99a !important; background:#4a3200; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+.badge-good      { color:#d4f4e3 !important; background:#0d3d22; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+
+/* Expander detail flag banners — dark backgrounds, explicit text color */
+.flag-critical {
+    background-color: #3d1015 !important;
+    border-left: 4px solid #e05260;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 6px 0;
+    color: #ffb3bb !important;
+    font-weight: 500;
+}
+.flag-inspect {
+    background-color: #332800 !important;
+    border-left: 4px solid #f8b319;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 6px 0;
+    color: #ffe08a !important;
+    font-weight: 500;
+}
+.flag-rehab {
+    background-color: #202030 !important;
+    border-left: 4px solid #6c7aad;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 6px 0;
+    color: #b0b8d8 !important;
+    font-weight: 500;
+}
 </style>
 """, unsafe_allow_html=True)
 
