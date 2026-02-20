@@ -1125,10 +1125,14 @@ if uploaded:
 
     def color_row(row):
         q = row.get("Quality", "")
-        if q == "Green Light":   return ["background-color:#d1e7dd"] * len(row)
-        if q == "Caution":       return ["background-color:#fff3cd"] * len(row)
-        if q == "Inspect First": return ["background-color:#f8d7da"] * len(row)
-        return                          ["background-color:#f8f9fa; color:#6c757d"] * len(row)
+        # Always force dark text so it's readable on light-colored row backgrounds
+        if q == "Green Light":
+            return ["background-color:#0d4a2a; color:#d4f4e3; font-weight:500"] * len(row)
+        if q == "Caution":
+            return ["background-color:#4a3a00; color:#ffe99a; font-weight:500"] * len(row)
+        if q == "Inspect First":
+            return ["background-color:#4a0d0d; color:#ffc5c5; font-weight:500"] * len(row)
+        return     ["background-color:#1e1e2a; color:#9090a8"] * len(row)
 
     fmt = {
         "List Price":             "${:,.0f}",
