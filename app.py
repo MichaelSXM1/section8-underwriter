@@ -808,6 +808,7 @@ sample = pd.DataFrame({
     "List Price":  [95000, 120000],
     "Agent Name":  ["Jane Smith", "Bob Johnson"],
     "Agent Email": ["jane@realty.com", "bob@realty.com"],
+    "Agent Phone": ["317-555-0101", "317-555-0202"],
     "Description": ["", ""],
 })
 st.download_button("⬇️ Download Sample CSV", sample.to_csv(index=False).encode(),
@@ -847,6 +848,8 @@ if uploaded:
                     "realtorname","brokeragent"):                          col_map[c] = "Agent Name"
         elif cl in ("agentemail","email","agentcontact",
                     "realtoremail","brokeragemail"):                       col_map[c] = "Agent Email"
+        elif cl in ("agentphone","phone","agentcell","agentmobile",
+                    "realtorphone","brokerphone","phonenumber","cell"):    col_map[c] = "Agent Phone"
     raw = raw.rename(columns=col_map)
 
     # ── Build full Address from split columns if needed ──
@@ -915,6 +918,7 @@ if uploaded:
         # Pass-through fields (agent info, sqft from CSV or Zillow)
         agent_name  = str(row.get("Agent Name",  "")).strip() if "Agent Name"  in raw.columns else ""
         agent_email = str(row.get("Agent Email", "")).strip() if "Agent Email" in raw.columns else ""
+        agent_phone = str(row.get("Agent Phone", "")).strip() if "Agent Phone" in raw.columns else ""
         csv_sqft    = float(row["Sqft"]) if "Sqft" in raw.columns and row["Sqft"] > 0 else 0
 
         # 1. Section 8 rent
@@ -1079,6 +1083,7 @@ if uploaded:
             "Sqft":                 int(sqft) if sqft else "",
             "Agent Name":           agent_name,
             "Agent Email":          agent_email,
+            "Agent Phone":          agent_phone,
 
             # ── Pricing ──
             "List Price":           list_price,
@@ -1235,10 +1240,11 @@ if uploaded:
                           help="After mortgage, taxes, insurance, vacancy, maintenance, mgmt")
 
                 # Agent info if available
-                if r.get("Agent Name") or r.get("Agent Email"):
-                    ag1, ag2 = st.columns(2)
+                if r.get("Agent Name") or r.get("Agent Email") or r.get("Agent Phone"):
+                    ag1, ag2, ag3 = st.columns(3)
                     if r.get("Agent Name"):  ag1.caption(f"👤 **Agent:** {r['Agent Name']}")
                     if r.get("Agent Email"): ag2.caption(f"📧 **Email:** {r['Agent Email']}")
+                    if r.get("Agent Phone"): ag3.caption(f"📞 **Phone:** {r['Agent Phone']}")
 
                 # ZIP market context (from Census ACS — free)
                 st.markdown("**ZIP Market Context (US Census ACS)**")
