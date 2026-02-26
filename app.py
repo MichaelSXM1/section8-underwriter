@@ -29,105 +29,150 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Metric cards — dark theme compatible */
+/* ── Apple System Font ── */
+* { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif !important; }
+
+/* ── App background ── */
+.stApp { background: #000000 !important; }
+.main .block-container { background: #000000; padding: 2rem 2.5rem; max-width: 1500px; }
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] { background: #1C1C1E !important; border-right: 1px solid #2C2C2E !important; }
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #8E8E93 !important; font-size: 10px !important; font-weight: 600 !important;
+    letter-spacing: 0.08em !important; text-transform: uppercase !important; margin-top: 18px !important;
+}
+
+/* ── Metric cards ── */
 div[data-testid="metric-container"] {
-    background: #1a1c24;
-    border-radius: 8px;
-    padding: 12px 16px;
-    border: 1px solid #2e3048;
+    background: #1C1C1E; border-radius: 14px; padding: 16px 20px; border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 div[data-testid="metric-container"] label {
-    color: #9090a8 !important;
-    font-size: 12px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: #8E8E93 !important; font-size: 10px !important; font-weight: 600 !important;
+    letter-spacing: 0.07em !important; text-transform: uppercase !important;
 }
-div[data-testid="metric-container"] [data-testid="stMetricValue"] {
-    color: #e2e2e8 !important;
-    font-weight: 600;
-}
+div[data-testid="stMetricValue"] { color: #FFFFFF !important; font-size: 22px !important; font-weight: 700 !important; letter-spacing: -0.02em !important; }
+div[data-testid="stMetricDelta"] { font-size: 11px !important; }
 
-/* Color‑coded inspection badges */
-.badge-critical  { color:#ffc5c5 !important; background:#5a1a1a; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-.badge-inspect   { color:#ffe99a !important; background:#4a3200; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-.badge-good      { color:#d4f4e3 !important; background:#0d3d22; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; }
-
-/* Expander detail flag banners — dark backgrounds, explicit text color */
+/* ── Flag banners ── */
 .flag-critical {
-    background-color: #3d1015 !important;
-    border-left: 4px solid #e05260;
-    padding: 10px 14px;
-    border-radius: 6px;
-    margin: 6px 0;
-    color: #ffb3bb !important;
-    font-weight: 500;
+    background: rgba(255,69,58,0.13); border-left: 3px solid #FF453A;
+    border-radius: 10px; padding: 10px 14px; margin: 6px 0;
+    color: #FF6961 !important; font-weight: 500; font-size: 13px;
 }
 .flag-inspect {
-    background-color: #332800 !important;
-    border-left: 4px solid #f8b319;
-    padding: 10px 14px;
-    border-radius: 6px;
-    margin: 6px 0;
-    color: #ffe08a !important;
-    font-weight: 500;
+    background: rgba(255,159,10,0.13); border-left: 3px solid #FF9F0A;
+    border-radius: 10px; padding: 10px 14px; margin: 6px 0;
+    color: #FFB340 !important; font-weight: 500; font-size: 13px;
 }
 .flag-rehab {
-    background-color: #202030 !important;
-    border-left: 4px solid #6c7aad;
-    padding: 10px 14px;
-    border-radius: 6px;
-    margin: 6px 0;
-    color: #b0b8d8 !important;
-    font-weight: 500;
+    background: rgba(10,132,255,0.13); border-left: 3px solid #0A84FF;
+    border-radius: 10px; padding: 10px 14px; margin: 6px 0;
+    color: #409CFF !important; font-weight: 500; font-size: 13px;
 }
+.flag-ok {
+    background: rgba(50,215,75,0.13); border-left: 3px solid #32D74B;
+    border-radius: 10px; padding: 10px 14px; margin: 6px 0;
+    color: #30DB5B !important; font-weight: 500; font-size: 13px;
+}
+
+/* ── Rent confidence pills ── */
+.rent-high   { background: rgba(50,215,75,0.18);  color: #30DB5B; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.rent-medium { background: rgba(255,159,10,0.18); color: #FFB340; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.rent-low    { background: rgba(255,69,58,0.18);  color: #FF6961; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+/* ── Section labels ── */
+.section-label {
+    color: #8E8E93; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border-bottom: 1px solid #2C2C2E; padding-bottom: 6px; margin: 18px 0 10px 0;
+}
+
+/* ── Info / success / warning override ── */
+div[data-testid="stAlert"] { border-radius: 12px !important; }
+
+/* ── Dataframe ── */
+.stDataFrame { border-radius: 14px !important; overflow: hidden !important; border: none !important; }
+iframe[data-testid="stDataFrame"] { border-radius: 14px !important; }
+
+/* ── Buttons ── */
+.stDownloadButton > button, .stButton > button {
+    background: #0A84FF !important; color: #FFFFFF !important; border: none !important;
+    border-radius: 10px !important; font-weight: 600 !important; letter-spacing: -0.01em !important;
+    padding: 8px 18px !important;
+}
+.stDownloadButton > button:hover, .stButton > button:hover { background: #0070D8 !important; }
+
+/* ── Expanders ── */
+details { background: #1C1C1E !important; border-radius: 14px !important; border: 1px solid #2C2C2E !important; margin-bottom: 8px !important; }
+details summary { font-weight: 500 !important; color: #FFFFFF !important; padding: 14px 18px !important; }
+
+/* ── Progress bar ── */
+.stProgress > div > div { background: #0A84FF !important; border-radius: 4px !important; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🏠 Section 8 Wholesale Underwriter")
-st.caption("Upload a CSV → get zip-accurate Section 8 rents (HUD SAFMR) + DSCR-based wholesale offers")
+# ── Page header ──
+st.markdown("""
+<div style="padding: 32px 0 20px 0;">
+  <div style="font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#8E8E93; margin-bottom:6px;">WHOLESALE UNDERWRITER</div>
+  <div style="font-size:34px; font-weight:700; letter-spacing:-0.03em; color:#FFFFFF; line-height:1.1;">Section 8 Deal Analyzer</div>
+  <div style="font-size:15px; color:#8E8E93; margin-top:6px; font-weight:400;">HUD SAFMR · Multi-source rent validation · DSCR pricing · Investor metrics</div>
+</div>
+""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # SIDEBAR
 # ─────────────────────────────────────────────
 with st.sidebar:
-    st.header("💰 Financing")
+    st.header("Financing")
     interest_rate    = st.number_input("Interest Rate (%)", value=7.5, step=0.1, min_value=1.0, max_value=20.0) / 100
     down_pct         = st.slider("Down Payment (%)", 10, 50, 20) / 100
     loan_term_years  = st.selectbox("Loan Term (Years)", [30, 20, 15], index=0)
     target_cashflow  = st.number_input("Target Buyer Cashflow ($/mo)", value=400, step=50)
 
-    st.header("🧾 Expenses")
+    st.header("Expenses")
     tax_rate         = st.number_input("Property Tax (% of value/yr)", value=1.5, step=0.1, min_value=0.0) / 100
     insurance_rate   = st.number_input("Insurance (% of value/yr)",    value=0.75, step=0.05, min_value=0.0) / 100
     vacancy_rate     = st.number_input("Vacancy (%)",                   value=5.0, step=1.0, min_value=0.0) / 100
     maintenance_rate = st.number_input("Maintenance (% of rent/mo)",   value=5.0, step=1.0, min_value=0.0) / 100
-    mgmt_rate        = st.number_input("Property Mgmt (%)",            value=0.0, step=1.0, min_value=0.0) / 100
+    mgmt_rate        = st.number_input("Property Mgmt (%)",            value=10.0, step=1.0, min_value=0.0,
+                                       help="Section 8 requires specialized PM. Industry standard: 8–12%.") / 100
+    capex_rate       = st.number_input("CapEx Reserve (% of rent/mo)", value=10.0, step=1.0, min_value=0.0,
+                                       help="Capital expenditures: roof, HVAC, appliances. Industry standard: 10% of rent.") / 100
+    utility_allowance= st.number_input("Utility Allowance ($/mo)",     value=100, step=25, min_value=0,
+                                       help="PHA deducts this from the voucher when tenant pays utilities. Max $100 is conservative. Adjust per market.")
 
-    st.header("🏷️ Wholesale Deal")
+    st.header("Wholesale Deal")
     wholesale_fee    = st.number_input("Your Assignment Fee ($)", value=10000, step=500, min_value=0)
     closing_costs_pct= st.number_input("Closing Costs (% of purchase)", value=3.0, step=0.5, min_value=0.0) / 100
 
-    st.header("🚩 Offer Flags")
+    st.header("Section 8 Settings")
+    payment_standard = st.selectbox(
+        "Payment Standard",
+        ["100% FMR (conservative)", "110% FMR (aggressive)"],
+        help="PHAs set their own payment standards between 90–110% of FMR. 100% is the safe default."
+    )
+    use_110 = "110%" in payment_standard
+    rent_growth_rate = st.number_input("Annual Rent Growth (%)", value=3.0, step=0.5, min_value=0.0,
+                                       help="HUD adjusts FMRs annually via the Annual Adjustment Factor. Historical avg: 2–4%.") / 100
+
+    st.header("Offer Flags")
     inspect_threshold = st.number_input(
         "Flag if DSCR max exceeds List Price by (%):",
         value=15, step=5, min_value=0,
         help="When the DSCR math supports a price much higher than list, it likely needs heavy rehab."
     )
-    payment_standard = st.selectbox(
-        "Section 8 Payment Standard",
-        ["100% FMR (conservative)", "110% FMR (aggressive)"],
-        help="PHAs set their own payment standards between 90–110% of FMR. 100% is the safe default."
-    )
-    use_110 = "110%" in payment_standard
 
-    st.header("🔑 Rentcast API (optional)")
+    st.header("Rentcast API (optional)")
     rentcast_key = st.text_input(
         "Rentcast API Key",
         type="password",
         help=(
-            "Optional — enables auto-fetching listing descriptions by address.\n\n"
+            "Optional — enables auto-fetching listing descriptions AND rent estimates by address.\n\n"
             "Free tier: 50 calls/month at app.rentcast.io\n\n"
-            "Without a key, include a 'Description' column in your CSV."
+            "With a key: rent validated against market comps for higher accuracy."
         ),
     )
 
@@ -208,6 +253,88 @@ def get_section8_rent(zip_code: str, beds: int, safmr_df: pd.DataFrame) -> tuple
     return fallback.get(beds, 1350), "Estimated (zip not in SAFMR dataset)"
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def fetch_rentcast_rent_avm(address: str, beds: int, sqft: int, api_key: str) -> int:
+    """
+    Call Rentcast's /v1/avm/rent/long-term endpoint to get a market rent estimate.
+    Returns integer rent estimate, or 0 if unavailable.
+    Uses same API key as listing description — no extra cost on free tier.
+    """
+    if not api_key or not api_key.strip():
+        return 0
+    try:
+        params = {"address": address, "bedrooms": beds}
+        if sqft > 0:
+            params["squareFootage"] = sqft
+        resp = requests.get(
+            "https://api.rentcast.io/v1/avm/rent/long-term",
+            params=params,
+            headers={"X-Api-Key": api_key.strip(), "Accept": "application/json"},
+            timeout=10,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            rent = data.get("rent", 0)
+            return int(rent) if rent else 0
+    except Exception:
+        pass
+    return 0
+
+
+def get_rent_consensus(
+    safmr_rent: int,
+    census_rent: int,
+    rentcast_rent: int,
+    beds: int,
+    zip_str: str,
+) -> tuple[int, str, str]:
+    """
+    Cross-reference the HUD SAFMR against market rent sources and return the
+    most accurate estimate with a confidence level and reasoning.
+
+    The rent reasonableness rule: PHAs will NOT approve a contract rent above
+    comparable unassisted units in the same neighborhood — even if SAFMR is higher.
+    So if market evidence consistently shows rents below SAFMR, we must flag this
+    and adjust downward.
+
+    Returns: (effective_rent, confidence_level, reasoning_note)
+    """
+    sources = {"SAFMR": safmr_rent}
+    if census_rent > 200:
+        sources["Census ACS"] = census_rent
+    if rentcast_rent > 200:
+        sources["Rentcast AVM"] = rentcast_rent
+
+    if len(sources) == 1:
+        # Only SAFMR available — baseline confidence
+        return safmr_rent, "Medium", "HUD SAFMR only — no market comps to validate"
+
+    market_vals = [v for k, v in sources.items() if k != "SAFMR"]
+    avg_market  = sum(market_vals) / len(market_vals)
+    gap_pct     = (safmr_rent - avg_market) / safmr_rent if safmr_rent > 0 else 0
+
+    if gap_pct > 0.25:
+        # Market rents are more than 25% below SAFMR — rent reasonableness will likely cap
+        effective = round(avg_market / 25) * 25  # round to nearest $25
+        note = (
+            f"⚠ Rent reasonableness risk — SAFMR ${safmr_rent:,} is {gap_pct:.0%} above "
+            f"market comps (avg ${avg_market:,.0f}). PHA may cap contract rent near market rate."
+        )
+        return effective, "Low", note
+    elif gap_pct > 0.12:
+        # Moderate gap — use SAFMR but warn
+        note = (
+            f"SAFMR ${safmr_rent:,} is {gap_pct:.0%} above market avg (${avg_market:,.0f}). "
+            f"Verify rent reasonableness with local PHA before locking in offer."
+        )
+        return safmr_rent, "Medium", note
+    else:
+        # Sources agree — high confidence
+        source_list = ", ".join(f"{k} ${v:,}" for k, v in sources.items())
+        note = f"All sources agree within 12% — {source_list}"
+        return safmr_rent, "High", note
+
+
 # ─────────────────────────────────────────────
 # CENSUS ACS — FREE ZIP-LEVEL MARKET DATA
 # No API key required. Used for anomaly-based condition detection.
@@ -216,17 +343,23 @@ def get_section8_rent(zip_code: str, beds: int, safmr_df: pd.DataFrame) -> tuple
 def get_census_zip_data(zip_code: str) -> dict:
     """
     Pull ACS 5-year estimates for a ZIP code from the Census Bureau API.
-    Returns dict with median_home_value, total_units, vacancy_rate.
+    Returns dict with median_home_value, vacancy_rate, AND median rent by bedrooms.
     Completely free, no API key required.
     Variables:
       B25077_001E = Median home value ($)
       B25002_001E = Total housing units
       B25002_003E = Vacant housing units
+      B25031_002E = Median rent, no bedroom (studio)
+      B25031_003E = Median rent, 1 bedroom
+      B25031_004E = Median rent, 2 bedrooms
+      B25031_005E = Median rent, 3 bedrooms
+      B25031_006E = Median rent, 4 bedrooms
     """
     zip_str = str(zip_code).strip().zfill(5)
     url = (
         "https://api.census.gov/data/2022/acs/acs5"
-        "?get=B25077_001E,B25002_001E,B25002_003E"
+        "?get=B25077_001E,B25002_001E,B25002_003E,"
+        "B25031_002E,B25031_003E,B25031_004E,B25031_005E,B25031_006E"
         f"&for=zip+code+tabulation+area:{zip_str}"
     )
     try:
@@ -235,15 +368,25 @@ def get_census_zip_data(zip_code: str) -> dict:
             data = r.json()
             if len(data) >= 2:
                 row = data[1]
-                median_val  = int(row[0]) if row[0] and row[0] != "-666666666" else 0
-                total_units = int(row[1]) if row[1] else 0
-                vacant_units= int(row[2]) if row[2] else 0
-                vacancy_pct = round((vacant_units / total_units * 100), 1) if total_units > 0 else 0
+                def safe_int(v): return int(v) if v and str(v) not in ("-666666666", "-1") else 0
+                median_val   = safe_int(row[0])
+                total_units  = safe_int(row[1])
+                vacant_units = safe_int(row[2])
+                vacancy_pct  = round((vacant_units / total_units * 100), 1) if total_units > 0 else 0
+                # Median rent by bedroom: index 3=studio,4=1BR,5=2BR,6=3BR,7=4BR
+                rent_by_beds = {
+                    0: safe_int(row[3]),
+                    1: safe_int(row[4]),
+                    2: safe_int(row[5]),
+                    3: safe_int(row[6]),
+                    4: safe_int(row[7]),
+                }
                 return {
                     "median_home_value": median_val,
                     "total_units":       total_units,
                     "vacant_units":      vacant_units,
                     "vacancy_rate_pct":  vacancy_pct,
+                    "median_rent_by_beds": rent_by_beds,
                 }
     except Exception:
         pass
@@ -674,6 +817,8 @@ def calculate_dscr_offer(
     vac_r: float,
     maint_r: float,
     mgmt_r: float,
+    capex_r: float,
+    utility_allowance: float,
     interest: float,
     term_yrs: int,
     down_pct: float,
@@ -681,25 +826,30 @@ def calculate_dscr_offer(
     closing_pct: float,
     fee: float,
     list_price: float,
+    repair_mid: float = 0,
 ) -> dict:
     """
     Solve for the MAX BUYER PRICE where the deal cashflows >= target_cf/mo.
 
-    KEY RULE: Max Buyer Price is ALWAYS capped at list_price.
-    A buyer would never pay more than list price. If the DSCR math allows a
-    higher price, that just means the deal has extra margin — it does NOT mean
-    the buyer should pay more.
+    Expense model (in order of how they reduce cashflow):
+      1. Utility allowance — PHA deducts this from voucher; landlord receives less
+      2. Vacancy — units aren't always rented
+      3. Maintenance + Property Mgmt — % of effective (post-utility) rent
+      4. CapEx reserve — % of gross rent set aside for capital expenditures
+      5. Taxes, Insurance — % of purchase price
+      6. Mortgage — payment on loan amount
 
-    Your Offer (to the seller) = min(max_buyer_price, list_price) - wholesale_fee - closing_costs
-    This is what YOU submit as a wholesale contract price.
-
-    Returns a dict with all intermediate numbers.
+    KEY RULE: Max Buyer Price ALWAYS capped at list_price.
+    Returns full dict with DSCR ratio, CoC, RTV, GRM, break-even rent, 5-yr projection.
     """
     if s8_rent <= 0 or list_price <= 0:
         return {"viable": False}
 
-    egi     = s8_rent * (1 - vac_r)          # effective gross income after vacancy
-    var_exp = s8_rent * (maint_r + mgmt_r)    # variable % of rent expenses
+    # Effective rent = what landlord actually receives after utility allowance deduction
+    eff_rent = max(0, s8_rent - utility_allowance)
+    egi      = eff_rent * (1 - vac_r)           # after vacancy
+    var_exp  = eff_rent * (maint_r + mgmt_r)     # maintenance + mgmt on effective rent
+    capex_mo = s8_rent  * capex_r               # CapEx on gross rent (set-aside regardless of vacancy)
 
     mo_rate = interest / 12
     n       = term_yrs * 12
@@ -708,30 +858,29 @@ def calculate_dscr_offer(
     else:
         mort_factor = 1 / n
 
-    # Solve: egi - var_exp - (tax/12)*P - (ins/12)*P - mort_factor*(1-down)*P = target_cf
+    # Solve for P (max buyer price):
+    # egi - var_exp - capex_mo - (tax/12)*P - (ins/12)*P - mort_factor*(1-down)*P = target_cf
     coeff = (tax_r / 12) + (ins_r / 12) + mort_factor * (1 - down_pct)
-    num   = egi - var_exp - target_cf
+    num   = egi - var_exp - capex_mo - target_cf
 
     if num <= 0 or coeff <= 0:
         return {"viable": False}
 
-    dscr_max = num / coeff  # what the DSCR math supports — could be > list_price
-
-    # ── CAP: buyer never pays more than list price ──
+    dscr_max        = num / coeff
     max_buyer_price = min(dscr_max, list_price)
 
-    # Recalculate actual cashflow at the capped buyer price
+    # Recalculate actuals at capped buyer price
     loan        = max_buyer_price * (1 - down_pct)
     mort_pmt    = npf.pmt(mo_rate, n, -loan) if mo_rate > 0 else loan / n
     taxes_mo    = (max_buyer_price * tax_r) / 12
     ins_mo      = (max_buyer_price * ins_r) / 12
-    actual_cf   = egi - var_exp - taxes_mo - ins_mo - mort_pmt
+    actual_cf   = egi - var_exp - capex_mo - taxes_mo - ins_mo - mort_pmt
 
-    # ── Your wholesale offer to seller ──
-    # Closing costs are based on the actual contract price (your offer to seller)
-    # your_offer = max_buyer_price - fee - closing_costs_on_your_offer
-    # Solving: offer + offer*closing_pct = max_buyer_price - fee
-    # offer * (1 + closing_pct) = max_buyer_price - fee
+    # DSCR ratio — NOI / Debt Service (lenders want ≥ 1.15 for Section 8)
+    noi         = egi - var_exp - capex_mo - taxes_mo - ins_mo
+    dscr_ratio  = round(noi / mort_pmt, 2) if mort_pmt > 0 else 0
+
+    # Your wholesale offer to seller
     if closing_pct < 1:
         your_offer_gross = max_buyer_price - fee
         your_offer       = your_offer_gross / (1 + closing_pct)
@@ -739,26 +888,56 @@ def calculate_dscr_offer(
     else:
         return {"viable": False}
 
-    # Extra margin when DSCR math supported more than list price
+    # ── Investor metrics ──
+    down_payment = max_buyer_price * down_pct
+    # Rent-to-Value: monthly rent / purchase price × 100 (target ≥ 0.8%)
+    rtv_pct = (s8_rent / max_buyer_price * 100) if max_buyer_price > 0 else 0
+    # GRM: price / annual rent (target ≤ 9)
+    grm = max_buyer_price / (s8_rent * 12) if s8_rent > 0 else 0
+    # Cash-on-Cash: annual CF / total cash invested (down + closing + repairs)
+    total_cash_invested = down_payment + closing_amt + repair_mid
+    annual_cf = actual_cf * 12
+    coc_pct   = (annual_cf / total_cash_invested * 100) if total_cash_invested > 0 else 0
+
+    # Break-even rent (minimum S8 rent to hit $0 cashflow at this buyer price)
+    # (R - U)*(1-vac)*((1-(maint+mgmt)) - R*capex = taxes + ins + mort
+    # Let A = (1-vac_r)*(1 - maint_r - mgmt_r)
+    A = (1 - vac_r) * (1 - maint_r - mgmt_r)
+    fixed_mo = taxes_mo + ins_mo + mort_pmt
+    # R*A - U*A - R*capex_r = fixed_mo  →  R*(A - capex_r) = fixed_mo + U*A
+    be_denom = A - capex_r
+    break_even_rent = round((fixed_mo + utility_allowance * A) / be_denom) if be_denom > 0 else 0
+
     dscr_headroom = max(0, dscr_max - list_price)
 
     return {
-        "viable":           your_offer > 0,
-        "dscr_max_price":   round(dscr_max, 2),      # what math supports (may exceed list)
-        "max_buyer_price":  round(max_buyer_price, 2), # capped at list price
-        "s8_rent":          s8_rent,
-        "egi":              round(egi, 2),
-        "var_expenses":     round(var_exp, 2),
-        "taxes_mo":         round(taxes_mo, 2),
-        "insurance_mo":     round(ins_mo, 2),
-        "mortgage_pmt":     round(mort_pmt, 2),
-        "actual_cf":        round(actual_cf, 2),
-        "loan_amount":      round(loan, 2),
-        "down_payment":     round(max_buyer_price * down_pct, 2),
-        "closing_costs":    round(closing_amt, 2),
-        "wholesale_fee":    fee,
-        "your_offer":       round(your_offer, 2),
-        "dscr_headroom":    round(dscr_headroom, 2),  # extra margin above list
+        "viable":             your_offer > 0,
+        "dscr_max_price":     round(dscr_max, 2),
+        "max_buyer_price":    round(max_buyer_price, 2),
+        "s8_rent":            s8_rent,
+        "eff_rent":           round(eff_rent, 2),
+        "egi":                round(egi, 2),
+        "var_expenses":       round(var_exp, 2),
+        "capex_mo":           round(capex_mo, 2),
+        "taxes_mo":           round(taxes_mo, 2),
+        "insurance_mo":       round(ins_mo, 2),
+        "mortgage_pmt":       round(mort_pmt, 2),
+        "actual_cf":          round(actual_cf, 2),
+        "loan_amount":        round(loan, 2),
+        "down_payment":       round(down_payment, 2),
+        "closing_costs":      round(closing_amt, 2),
+        "wholesale_fee":      fee,
+        "your_offer":         round(your_offer, 2),
+        "dscr_headroom":      round(dscr_headroom, 2),
+        # New investor metrics
+        "dscr_ratio":         dscr_ratio,
+        "rtv_pct":            round(rtv_pct, 2),
+        "grm":                round(grm, 2),
+        "coc_pct":            round(coc_pct, 1),
+        "total_cash_invested":round(total_cash_invested, 2),
+        "break_even_rent":    break_even_rent,
+        "annual_cf":          round(annual_cf, 2),
+        "noi":                round(noi, 2),
     }
 
 
@@ -921,10 +1100,56 @@ if uploaded:
         agent_phone = str(row.get("Agent Phone", "")).strip() if "Agent Phone" in raw.columns else ""
         csv_sqft    = float(row["Sqft"]) if "Sqft" in raw.columns and row["Sqft"] > 0 else 0
 
-        # 1. Section 8 rent
-        s8_rent, rent_src = get_section8_rent(zip_str, beds, safmr_df)
+        # 1. Section 8 rent — HUD SAFMR (primary)
+        s8_rent_safmr, rent_src_base = get_section8_rent(zip_str, beds, safmr_df)
 
-        # 2. Description — CSV column first, then Rentcast API
+        # 1a. Sqft adjustment to Section 8 rent
+        sqft_note = ""
+        s8_rent   = s8_rent_safmr
+        rent_src  = rent_src_base
+        if csv_sqft > 0:
+            hud_sqft_standard = {0: 600, 1: 750, 2: 900, 3: 1100, 4: 1300}
+            standard  = hud_sqft_standard.get(min(beds, 4), 900)
+            sqft_ratio = csv_sqft / standard if standard > 0 else 1.0
+            if sqft_ratio < 0.70:
+                adj_pct  = -0.08
+                sqft_note = f"Sqft {csv_sqft:.0f} is {(1-sqft_ratio)*100:.0f}% below HUD standard ({standard} sqft) — rent adjusted -8%"
+            elif sqft_ratio < 0.85:
+                adj_pct  = -0.04
+                sqft_note = f"Sqft {csv_sqft:.0f} slightly below HUD standard ({standard} sqft) — rent adjusted -4%"
+            elif sqft_ratio > 1.40:
+                adj_pct  = 0.07
+                sqft_note = f"Sqft {csv_sqft:.0f} well above HUD standard ({standard} sqft) — rent adjusted +7%"
+            elif sqft_ratio > 1.20:
+                adj_pct  = 0.04
+                sqft_note = f"Sqft {csv_sqft:.0f} above HUD standard ({standard} sqft) — rent adjusted +4%"
+            else:
+                adj_pct  = 0.0
+            if adj_pct != 0.0:
+                s8_rent  = round(s8_rent_safmr * (1 + adj_pct))
+                rent_src = rent_src_base + f" (sqft adj {adj_pct:+.0%})"
+
+        # 1b. Zillow listing signals (free — no API key, no bot detection)
+        zillow_signals = fetch_zillow_listing_signals(addr)
+        zil_condition, zil_signal_strs = analyze_zillow_signals(zillow_signals)
+        sqft = csv_sqft if csv_sqft > 0 else (zillow_signals.get("sqft") or 0)
+
+        # 1c. Census rent by bedrooms + Rentcast AVM — validate SAFMR
+        census_data   = get_census_zip_data(zip_str)
+        census_rent   = (census_data.get("median_rent_by_beds") or {}).get(min(beds, 4), 0)
+        rentcast_rent = fetch_rentcast_rent_avm(addr, beds, int(sqft), rentcast_key)
+
+        # 1d. Rent consensus — cross-reference all sources, flag reasonableness risk
+        s8_rent_final, rent_confidence, rent_note = get_rent_consensus(
+            safmr_rent=s8_rent,
+            census_rent=census_rent,
+            rentcast_rent=rentcast_rent,
+            beds=beds,
+            zip_str=zip_str,
+        )
+        s8_rent = s8_rent_final  # use the validated rent for all calculations
+
+        # 2. Description — CSV first, then Rentcast API
         has_csv_desc = (
             "Description" in raw.columns
             and pd.notnull(row.get("Description"))
@@ -935,70 +1160,36 @@ if uploaded:
             desc_src    = "CSV"
         else:
             description, desc_src = get_listing_description(addr, rentcast_key)
-            time.sleep(0.3)  # gentle rate limit for Rentcast free tier
+            time.sleep(0.3)
 
-        # 1b. Sqft adjustment to Section 8 rent
-        # HUD SAFMRs are bedroom-based, but sqft can modestly affect achievable rent.
-        # HUD uses a general standard: ~600 sqft for studios, +150 sqft per bedroom.
-        # If the property is significantly under the HUD standard, apply a small penalty.
-        # If significantly over, apply a small premium (capped at +10%).
-        # This only applies when we have sqft data.
-        sqft_note = ""
-        if csv_sqft > 0:
-            # HUD standard sqft per bedroom count (approximate)
-            hud_sqft_standard = {0: 600, 1: 750, 2: 900, 3: 1100, 4: 1300}
-            standard = hud_sqft_standard.get(min(beds, 4), 900)
-            sqft_ratio = csv_sqft / standard if standard > 0 else 1.0
-            if sqft_ratio < 0.70:
-                # Very undersized — PHAs and tenants will discount this
-                adj_pct = -0.08
-                sqft_note = f"⬇ Sqft {csv_sqft:.0f} is {(1-sqft_ratio)*100:.0f}% below HUD standard ({standard} sqft) — rent adjusted -8%"
-            elif sqft_ratio < 0.85:
-                adj_pct = -0.04
-                sqft_note = f"Sqft {csv_sqft:.0f} slightly below HUD standard ({standard} sqft) — rent adjusted -4%"
-            elif sqft_ratio > 1.40:
-                adj_pct = 0.07
-                sqft_note = f"⬆ Sqft {csv_sqft:.0f} is well above HUD standard ({standard} sqft) — rent adjusted +7%"
-            elif sqft_ratio > 1.20:
-                adj_pct = 0.04
-                sqft_note = f"Sqft {csv_sqft:.0f} above HUD standard ({standard} sqft) — rent adjusted +4%"
-            else:
-                adj_pct = 0.0
-            if adj_pct != 0.0:
-                s8_rent = round(s8_rent * (1 + adj_pct))
-                rent_src = rent_src + f" (sqft adj {adj_pct:+.0%})"
-
-        # 2b. Zillow listing signals (free — no API key, no bot detection)
-        zillow_signals = fetch_zillow_listing_signals(addr)
-        zil_condition, zil_signal_strs = analyze_zillow_signals(zillow_signals)
-
-        # Use Zillow sqft if CSV didn't provide it
-        sqft = csv_sqft if csv_sqft > 0 else (zillow_signals.get("sqft") or 0)
-
-        # 3. Condition (from description keywords first, Zillow signals as fallback)
+        # 3. Condition analysis
         condition, kw_hits = analyze_condition(description)
 
         list_price = float(row["List Price"])
 
-        # 4. DSCR offer — list_price passed in so buyer price is always capped at it
+        # 4. Estimated repairs (needed before DSCR calc for CoC)
+        repair_low, repair_high, repair_tier = estimate_repairs(condition, sqft, list_price)
+        repair_mid_val = (repair_low + repair_high) / 2
+        repair_range_str = f"${repair_low:,.0f} – ${repair_high:,.0f}" if (repair_low or repair_high) else "Unknown"
+
+        # 5. DSCR offer — uses all expense inputs including CapEx and utility allowance
         calc = calculate_dscr_offer(
             s8_rent=s8_rent,
             tax_r=tax_rate, ins_r=insurance_rate,
             vac_r=vacancy_rate, maint_r=maintenance_rate, mgmt_r=mgmt_rate,
+            capex_r=capex_rate, utility_allowance=utility_allowance,
             interest=interest_rate, term_yrs=loan_term_years,
             down_pct=down_pct, target_cf=target_cashflow,
             closing_pct=closing_costs_pct, fee=wholesale_fee,
             list_price=list_price,
+            repair_mid=repair_mid_val,
         )
 
-        # 5. Enforce minimum $10k below list for buyer price
-        #    Your offer = buyer_price - fee - closing → buyer must pay ≥ $10k below list
+        # 6. Enforce minimum $10k below list for buyer price
         if calc.get("viable"):
             buyer_price = calc["max_buyer_price"]
-            # If buyer price is within $10k of list, pull it back
             if buyer_price > list_price - 10000:
                 calc["max_buyer_price"] = list_price - 10000
-                # Recalculate your offer from the adjusted buyer price
                 your_offer_gross = calc["max_buyer_price"] - wholesale_fee
                 calc["your_offer"]    = round(your_offer_gross / (1 + closing_costs_pct), 2)
                 calc["closing_costs"] = round(calc["your_offer"] * closing_costs_pct, 2)
@@ -1007,9 +1198,8 @@ if uploaded:
                 if calc["your_offer"] <= 0:
                     calc["viable"] = False
 
-        # 6. Free Census-based price anomaly detection (works for every property, no API key)
+        # 7. Census price anomaly detection
         price_signals = get_price_anomaly_signals(list_price, beds, zip_str)
-        census_data   = get_census_zip_data(zip_str)
 
         # Merge condition from all sources (description > Zillow signals > Census price anomaly)
         if condition == "Unknown":
@@ -1025,7 +1215,7 @@ if uploaded:
             elif zil_condition:
                 condition = zil_condition
 
-        # 7. Build inspection flags
+        # 8. Build flags
         flags = []
         if condition == "Critical":
             flags.append("CRITICAL DISTRESS — inspect before offering")
@@ -1035,17 +1225,13 @@ if uploaded:
         elif condition == "Possibly Distressed":
             flags.append("Price anomaly — well below zip median, verify condition")
 
-        # Add Census price anomaly signals as flags
         for sig in price_signals:
-            if sig not in " | ".join(flags):  # avoid duplication
+            if sig not in " | ".join(flags):
                 flags.append(sig)
-
-        # Add Zillow listing signals as flags
         for sig in zil_signal_strs:
             if sig not in " | ".join(flags):
                 flags.append(sig)
 
-        # DSCR headroom flag
         if calc.get("viable"):
             headroom = calc.get("dscr_headroom", 0)
             if headroom >= list_price * (inspect_threshold / 100):
@@ -1053,11 +1239,36 @@ if uploaded:
                     f"INSPECT — DSCR supports ${calc['dscr_max_price']:,.0f} "
                     f"(${headroom:,.0f} above list) — likely needs heavy rehab, verify condition"
                 )
+            # DSCR lender ratio warning
+            if calc.get("dscr_ratio", 0) > 0 and calc["dscr_ratio"] < 1.15:
+                flags.append(
+                    f"DSCR {calc['dscr_ratio']:.2f}x — below lender minimum 1.15x for Section 8 loans"
+                )
+            # Rent-to-Value flag
+            rtv = calc.get("rtv_pct", 0)
+            if rtv > 0 and rtv < 0.7:
+                flags.append(
+                    f"Low rent-to-value {rtv:.2f}% — Section 8 investors target ≥ 0.8%"
+                )
+
+        # Rent confidence flag
+        if rent_confidence == "Low":
+            flags.append(rent_note)
+        elif rent_confidence == "Medium" and "risk" in rent_note.lower():
+            flags.append(rent_note)
+
+        # HQS fail risk flag
+        if condition in ("Critical", "Needs Work", "Likely Distressed"):
+            flags.append(
+                f"High HQS inspection risk — Section 8 inspections fail 20–40% of the time "
+                f"for properties in '{condition}' condition. Budget for re-inspection and remediation."
+            )
 
         flag_str = " | ".join(flags)
 
-        # Deal quality
-        if not calc.get("viable"):
+        # Deal quality — RTV < 0.6% forces No Deal
+        rtv = calc.get("rtv_pct", 0)
+        if not calc.get("viable") or rtv > 0 and rtv < 0.6:
             quality = "No Deal"
         elif condition in ("Critical", "Likely Distressed") or "CRITICAL" in flag_str:
             quality = "Inspect First"
@@ -1066,114 +1277,146 @@ if uploaded:
         else:
             quality = "Green Light"
 
-        # Estimated repairs
-        repair_low, repair_high, repair_tier = estimate_repairs(condition, sqft, list_price)
-        repair_range_str = f"${repair_low:,.0f} – ${repair_high:,.0f}" if (repair_low or repair_high) else "Unknown"
-
         # Sqft note for export
         if not sqft_note and sqft > 0:
             sqft_note = f"{sqft:.0f} sqft"
 
+        # 5-year rent projection (for export and expander)
+        proj_5yr = []
+        _r = s8_rent
+        for yr in range(1, 6):
+            _eff  = max(0, _r - utility_allowance)
+            _egi  = _eff * (1 - vacancy_rate)
+            _vexp = _eff * (maintenance_rate + mgmt_rate)
+            _capx = _r * capex_rate
+            _fixed = (calc.get("taxes_mo", 0) * (1.02 ** (yr - 1))
+                    + calc.get("insurance_mo", 0) * (1.02 ** (yr - 1))
+                    + calc.get("mortgage_pmt", 0))
+            _cf   = _egi - _vexp - _capx - _fixed
+            proj_5yr.append({"year": yr, "rent": round(_r), "cf": round(_cf)})
+            _r = round(_r * (1 + rent_growth_rate))
+
         rows_out.append({
             # ── Identifiers ──
-            "Quality":              quality,
-            "Address":              addr,
-            "Zip":                  zip_str,
-            "Beds":                 beds,
-            "Sqft":                 int(sqft) if sqft else "",
-            "Agent Name":           agent_name,
-            "Agent Email":          agent_email,
-            "Agent Phone":          agent_phone,
+            "Quality":               quality,
+            "Address":               addr,
+            "Zip":                   zip_str,
+            "Beds":                  beds,
+            "Sqft":                  int(sqft) if sqft else "",
+            "Agent Name":            agent_name,
+            "Agent Email":           agent_email,
+            "Agent Phone":           agent_phone,
 
-            # ── Pricing ──
-            "List Price":           list_price,
-            "Section 8 Rent ($/mo)":s8_rent,
-            "Rent Source":          rent_src,
-            "Sqft Rent Note":       sqft_note,
+            # ── Section 8 Rent ──
+            "Section 8 Rent ($/mo)": s8_rent,
+            "Rent Confidence":       rent_confidence,
+            "Rent Note":             rent_note,
+            "SAFMR Rent":            s8_rent_safmr,
+            "Census Rent":           census_rent if census_rent > 0 else "",
+            "Rentcast AVM Rent":     rentcast_rent if rentcast_rent > 0 else "",
+            "Rent Source":           rent_src,
+            "Sqft Rent Note":        sqft_note,
+            "Utility Allowance":     utility_allowance,
+            "Effective Rent":        calc.get("eff_rent", s8_rent - utility_allowance),
 
             # ── Wholesale Offer Stack ──
-            "Your Max Offer":       calc.get("your_offer", 0),
-            "Buyer Max Purchase":   calc.get("max_buyer_price", 0),
-            "DSCR Max (uncapped)":  calc.get("dscr_max_price", 0),
-            "Your Wholesale Fee":   calc.get("wholesale_fee", 0),
-            "Buyer Closing Costs":  calc.get("closing_costs", 0),
-            "Buyer Down Payment":   calc.get("down_payment", 0),
-            "Buyer Loan Amount":    calc.get("loan_amount", 0),
+            "List Price":            list_price,
+            "Your Max Offer":        calc.get("your_offer", 0),
+            "Buyer Max Purchase":    calc.get("max_buyer_price", 0),
+            "DSCR Max (uncapped)":   calc.get("dscr_max_price", 0),
+            "Your Wholesale Fee":    calc.get("wholesale_fee", 0),
+            "Buyer Closing Costs":   calc.get("closing_costs", 0),
+            "Buyer Down Payment":    calc.get("down_payment", 0),
+            "Buyer Loan Amount":     calc.get("loan_amount", 0),
+
+            # ── Investor Metrics ──
+            "DSCR Ratio":            calc.get("dscr_ratio", 0),
+            "Rent-to-Value (%)":     calc.get("rtv_pct", 0),
+            "GRM":                   calc.get("grm", 0),
+            "Cash-on-Cash (%)":      calc.get("coc_pct", 0),
+            "Total Cash to Close":   calc.get("total_cash_invested", 0),
+            "Annual Cash Flow":      calc.get("annual_cf", 0),
+            "Break-even Rent":       calc.get("break_even_rent", 0),
 
             # ── Monthly Cash Flow ──
-            "Est Buyer CF ($/mo)":  calc.get("actual_cf", 0),
-            "Monthly Mortgage":     calc.get("mortgage_pmt", 0),
-            "Monthly Taxes":        calc.get("taxes_mo", 0),
-            "Monthly Insurance":    calc.get("insurance_mo", 0),
+            "Est Buyer CF ($/mo)":   calc.get("actual_cf", 0),
+            "Monthly Mortgage":      calc.get("mortgage_pmt", 0),
+            "Monthly Taxes":         calc.get("taxes_mo", 0),
+            "Monthly Insurance":     calc.get("insurance_mo", 0),
+            "Monthly CapEx":         calc.get("capex_mo", 0),
+            "Monthly Mgmt+Maint":    calc.get("var_expenses", 0),
 
             # ── Repairs ──
-            "Est Repairs":          repair_range_str,
-            "Repair Low ($)":       repair_low,
-            "Repair High ($)":      repair_high,
-            "Repair Tier":          repair_tier,
+            "Est Repairs":           repair_range_str,
+            "Repair Low ($)":        repair_low,
+            "Repair High ($)":       repair_high,
+            "Repair Tier":           repair_tier,
 
             # ── Market Context ──
-            "Zip Median Home Value":census_data.get("median_home_value", 0),
-            "Zip Vacancy Rate (%)": census_data.get("vacancy_rate_pct", 0),
-            "Price vs Zip Median":  f"{(list_price/census_data['median_home_value']*100):.0f}%" if census_data.get("median_home_value") else "N/A",
+            "Zip Median Home Value": census_data.get("median_home_value", 0),
+            "Zip Vacancy Rate (%)":  census_data.get("vacancy_rate_pct", 0),
+            "Price vs Zip Median":   f"{(list_price/census_data['median_home_value']*100):.0f}%" if census_data.get("median_home_value") else "N/A",
 
             # ── Condition ──
-            "Condition":            condition,
-            "Distress Keywords":    ", ".join(kw_hits[:6]),
-            "Inspection Flags":     flag_str,
+            "Condition":             condition,
+            "Distress Keywords":     ", ".join(kw_hits[:6]),
+            "Inspection Flags":      flag_str,
 
             # ── Listing Data ──
-            "Listing Description":  (description[:400] if description else ""),
-            "Zillow Insight":       zillow_signals.get("flex_text", ""),
-            "Days on Market":       zillow_signals.get("days_on_market", ""),
-            "Price Reduction":      zillow_signals.get("price_reduction", ""),
-            "Tax Assessed Value":   zillow_signals.get("tax_assessed_value", ""),
-            "Desc Source":          desc_src,
+            "Listing Description":   (description[:400] if description else ""),
+            "Zillow Insight":        zillow_signals.get("flex_text", ""),
+            "Days on Market":        zillow_signals.get("days_on_market", ""),
+            "Price Reduction":       zillow_signals.get("price_reduction", ""),
+            "Tax Assessed Value":    zillow_signals.get("tax_assessed_value", ""),
+            "Desc Source":           desc_src,
+
+            # ── 5-Year Projection (JSON for display) ──
+            "_proj_5yr":             proj_5yr,
         })
 
-    progress.progress(100, text="Done ✅")
+    progress.progress(100, text="Analysis complete")
     results = pd.DataFrame(rows_out)
 
-    # ── Summary metrics ──
-    st.markdown("---")
-    green  = results[results["Quality"] == "Green Light"]
-    caution= results[results["Quality"] == "Caution"]
-    insp   = results[results["Quality"] == "Inspect First"]
-    nodeal = results[results["Quality"] == "No Deal"]
-
-    m1, m2, m3, m4, m5 = st.columns(5)
-    m1.metric("Total Analyzed", len(results))
-    m2.metric("🟢 Green Light",  len(green),   help="Viable deal, no red flags")
-    m3.metric("🟡 Caution",      len(caution), help="Viable but shows distress keywords")
-    m4.metric("🔴 Inspect First",len(insp),    help="Offer >> list price or critical damage")
-    m5.metric("⛔ No Deal",      len(nodeal),  help="Math doesn't work at target cashflow")
-
-    # ── Results table ──
-    st.markdown("### 📊 Results")
-
+    # ── Summary scorecards ──
     quality_order = {"Green Light": 0, "Caution": 1, "Inspect First": 2, "No Deal": 3}
     results_sorted = results.copy()
     results_sorted["_sort"] = results_sorted["Quality"].map(quality_order)
-    results_sorted = results_sorted.sort_values("_sort").drop(columns="_sort")
+    results_sorted = results_sorted.sort_values("_sort").drop(columns=["_sort","_proj_5yr"], errors="ignore")
+
+    green   = results[results["Quality"] == "Green Light"]
+    caution = results[results["Quality"] == "Caution"]
+    insp    = results[results["Quality"] == "Inspect First"]
+    nodeal  = results[results["Quality"] == "No Deal"]
+    viable  = results[results["Quality"].isin(["Green Light","Caution"])]
+
+    st.markdown('<div class="section-label">Portfolio Overview</div>', unsafe_allow_html=True)
+    m1, m2, m3, m4, m5, m6 = st.columns(6)
+    m1.metric("Analyzed",      len(results))
+    m2.metric("Green Light",   len(green),   help="Viable — no red flags")
+    m3.metric("Caution",       len(caution), help="Viable — has distress signals")
+    m4.metric("Inspect First", len(insp),    help="Critical damage or DSCR far above list")
+    m5.metric("No Deal",       len(nodeal),  help="Math doesn't work at target cashflow")
+    if len(viable) > 0:
+        avg_coc = viable["Cash-on-Cash (%)"].mean()
+        m6.metric("Avg CoC (viable)", f"{avg_coc:.1f}%", help="Average cash-on-cash return across Green + Caution deals")
+
+    # ── Results table ──
+    st.markdown('<div class="section-label">Results</div>', unsafe_allow_html=True)
 
     display_cols = [
-        "Quality", "Address", "Beds", "Sqft", "List Price",
-        "Price vs Zip Median", "Section 8 Rent ($/mo)", "Your Max Offer", "Buyer Max Purchase",
-        "Est Repairs", "Est Buyer CF ($/mo)", "Condition", "Inspection Flags"
+        "Quality", "Address", "Beds", "Sqft", "List Price", "Section 8 Rent ($/mo)",
+        "Rent Confidence", "Your Max Offer", "Buyer Max Purchase",
+        "DSCR Ratio", "Rent-to-Value (%)", "Cash-on-Cash (%)", "GRM",
+        "Est Repairs", "Est Buyer CF ($/mo)", "Condition",
     ]
-    # Only keep display cols that exist (Sqft may be empty)
     display_cols = [c for c in display_cols if c in results_sorted.columns]
 
     def color_row(row):
         q = row.get("Quality", "")
-        # Always force dark text so it's readable on light-colored row backgrounds
-        if q == "Green Light":
-            return ["background-color:#0d4a2a; color:#d4f4e3; font-weight:500"] * len(row)
-        if q == "Caution":
-            return ["background-color:#4a3a00; color:#ffe99a; font-weight:500"] * len(row)
-        if q == "Inspect First":
-            return ["background-color:#4a0d0d; color:#ffc5c5; font-weight:500"] * len(row)
-        return     ["background-color:#1e1e2a; color:#9090a8"] * len(row)
+        if q == "Green Light":   return ["background-color:#0d3320; color:#34d073; font-weight:500"] * len(row)
+        if q == "Caution":       return ["background-color:#2d2000; color:#f5a623; font-weight:500"] * len(row)
+        if q == "Inspect First": return ["background-color:#2d0d0d; color:#ff6b6b; font-weight:500"] * len(row)
+        return                          ["background-color:#111111; color:#555555"] * len(row)
 
     fmt = {
         "List Price":             "${:,.0f}",
@@ -1181,136 +1424,233 @@ if uploaded:
         "Your Max Offer":         "${:,.0f}",
         "Buyer Max Purchase":     "${:,.0f}",
         "Est Buyer CF ($/mo)":    "${:,.0f}",
+        "DSCR Ratio":             "{:.2f}x",
+        "Rent-to-Value (%)":      "{:.2f}%",
+        "Cash-on-Cash (%)":       "{:.1f}%",
+        "GRM":                    "{:.1f}",
     }
     st.dataframe(
         results_sorted[display_cols].style
             .apply(color_row, axis=1)
             .format({k: v for k, v in fmt.items() if k in display_cols}),
         use_container_width=True,
-        height=520,
+        height=540,
     )
 
     # ── Deal detail expanders ──
-    viable_sorted = results_sorted[results_sorted["Quality"] != "No Deal"]
-    if not viable_sorted.empty:
-        st.markdown("### 🔍 Deal Breakdown")
-        for _, r in viable_sorted.iterrows():
-            icon = {"Green Light":"🟢","Caution":"🟡","Inspect First":"🔴"}.get(r["Quality"],"⚪")
-            spread = r["Your Max Offer"] - r["List Price"]
-            sqft_display = f"  |  {int(r['Sqft'])} sqft" if r.get("Sqft") else ""
-            label  = (
-                f"{icon} {r['Address']}{sqft_display}  |  "
-                f"Your Offer: **${r['Your Max Offer']:,.0f}**  |  "
-                f"List: ${r['List Price']:,.0f}  |  "
-                f"Spread vs list: ${spread:+,.0f}"
+    viable_for_exp = [r for _, r in results.iterrows() if r["Quality"] != "No Deal"]
+    viable_for_exp.sort(key=lambda r: quality_order.get(r["Quality"], 9))
+
+    if viable_for_exp:
+        st.markdown('<div class="section-label">Deal Breakdown</div>', unsafe_allow_html=True)
+        for r in viable_for_exp:
+            q_color = {"Green Light":"#34d073","Caution":"#f5a623","Inspect First":"#ff6b6b"}.get(r["Quality"],"#8E8E93")
+            spread  = r["Your Max Offer"] - r["List Price"]
+            sqft_lbl = f" · {int(r['Sqft'])} sqft" if r.get("Sqft") else ""
+            conf_pill = r.get("Rent Confidence","")
+            label = (
+                f"{'🟢' if r['Quality']=='Green Light' else '🟡' if r['Quality']=='Caution' else '🔴'} "
+                f"{r['Address']}{sqft_lbl}  ·  "
+                f"Your Offer ${r['Your Max Offer']:,.0f}  ·  "
+                f"List ${r['List Price']:,.0f}  ·  "
+                f"Spread ${spread:+,.0f}  ·  "
+                f"CoC {r.get('Cash-on-Cash (%)','—'):.1f}%  ·  "
+                f"RTV {r.get('Rent-to-Value (%)','—'):.2f}%"
             )
             with st.expander(label):
-                # Row 1: Price stack
-                c1, c2, c3, c4 = st.columns(4)
-                c1.metric("List Price",             f"${r['List Price']:,.0f}")
-                c1.metric("Section 8 Rent",         f"${r['Section 8 Rent ($/mo)']:,.0f}/mo")
-                c2.metric("Buyer Max Purchase",      f"${r['Buyer Max Purchase']:,.0f}",
-                          help="Capped at list price − $10k minimum. This is what your end buyer pays.")
-                c2.metric("DSCR Math Supports",     f"${r['DSCR Max (uncapped)']:,.0f}",
-                          help="What the DSCR formula alone supports — shown for context only.")
-                c3.metric("Your Max Offer (to seller)", f"${r['Your Max Offer']:,.0f}",
-                          help="Your wholesale contract price = Buyer price − fee − closing costs")
-                c3.metric("Your Wholesale Fee",     f"${r['Your Wholesale Fee']:,.0f}")
-                c4.metric("Buyer Down Payment",     f"${r['Buyer Down Payment']:,.0f}")
-                c4.metric("Buyer Closing Costs",    f"${r['Buyer Closing Costs']:,.0f}")
 
-                # Row 2: Repairs + Sqft
-                st.markdown("**Property Details & Estimated Repairs**")
-                rep1, rep2, rep3 = st.columns(3)
-                rep1.metric("Sqft",           str(int(r["Sqft"])) if r.get("Sqft") else "Unknown")
-                rep2.metric("Est. Repairs",   r.get("Est Repairs", "Unknown"),
-                            help="Rough wholesale estimate based on condition + sqft. Not a contractor bid.")
-                rep3.metric("Repair Tier",    r.get("Repair Tier", "—"))
+                # ── Rent intelligence block ──
+                conf     = r.get("Rent Confidence", "")
+                conf_css = {"High":"rent-high","Medium":"rent-medium","Low":"rent-low"}.get(conf,"rent-medium")
+                st.markdown(
+                    f'<div class="section-label">Section 8 Rent Intelligence '
+                    f'<span class="{conf_css}">{conf} Confidence</span></div>',
+                    unsafe_allow_html=True
+                )
+                ra, rb, rc, rd = st.columns(4)
+                ra.metric("S8 Rent Used",      f"${r['Section 8 Rent ($/mo)']:,.0f}/mo",
+                          help="Final rent used in all calculations after sqft + consensus adjustments")
+                rb.metric("HUD SAFMR",         f"${r.get('SAFMR Rent', 0):,.0f}/mo",
+                          help="Raw HUD FY2026 Small Area FMR for this ZIP + bedroom count")
+                rc.metric("Census Median Rent", f"${r['Census Rent']:,.0f}/mo" if r.get("Census Rent") else "N/A",
+                          help="ACS 5-yr median rent for this bedroom size in this ZIP — free market validation")
+                rd.metric("Rentcast AVM",       f"${r['Rentcast AVM Rent']:,.0f}/mo" if r.get("Rentcast AVM Rent") else "No key",
+                          help="Rentcast market rent estimate — most accurate when API key provided")
+                if r.get("Rent Note"):
+                    note_css = "flag-critical" if conf == "Low" else "flag-inspect" if conf == "Medium" else "flag-ok"
+                    st.markdown(f'<div class="{note_css}">{r["Rent Note"]}</div>', unsafe_allow_html=True)
                 if r.get("Sqft Rent Note"):
-                    st.caption(f"🏠 Sqft note: {r['Sqft Rent Note']}")
+                    st.caption(f"Sqft adjustment: {r['Sqft Rent Note']}")
 
-                # Row 3: Monthly breakdown
-                st.markdown("**Monthly Cash Flow (buyer's perspective at max purchase price)**")
-                ec1, ec2, ec3, ec4 = st.columns(4)
-                ec1.metric("S8 Rent In",      f"${r['Section 8 Rent ($/mo)']:,.0f}/mo")
-                ec2.metric("Mortgage",         f"${r['Monthly Mortgage']:,.0f}/mo")
-                ec3.metric("Taxes",            f"${r['Monthly Taxes']:,.0f}/mo")
-                ec4.metric("Insurance",        f"${r['Monthly Insurance']:,.0f}/mo")
-                st.metric("Est. Buyer Cashflow", f"${r['Est Buyer CF ($/mo)']:,.0f}/mo",
-                          help="After mortgage, taxes, insurance, vacancy, maintenance, mgmt")
+                # ── Investor metrics ──
+                st.markdown('<div class="section-label">Investor Metrics</div>', unsafe_allow_html=True)
+                im1, im2, im3, im4, im5 = st.columns(5)
+                dscr = r.get("DSCR Ratio", 0)
+                dscr_delta = "✓ Lender OK" if dscr >= 1.15 else "⚠ Below 1.15 min"
+                im1.metric("DSCR Ratio",        f"{dscr:.2f}x",      delta=dscr_delta,
+                           help="NOI / Debt Service. Section 8 lenders require ≥ 1.15x")
+                rtv = r.get("Rent-to-Value (%)", 0)
+                rtv_delta = "✓ Strong" if rtv >= 1.0 else "✓ OK" if rtv >= 0.8 else "⚠ Low"
+                im2.metric("Rent-to-Value",     f"{rtv:.2f}%",       delta=rtv_delta,
+                           help="Monthly rent / purchase price. Target ≥ 0.8%, ideal ≥ 1%")
+                coc = r.get("Cash-on-Cash (%)", 0)
+                coc_delta = "✓ Strong" if coc >= 8 else "✓ OK" if coc >= 6 else "⚠ Low"
+                im3.metric("Cash-on-Cash",      f"{coc:.1f}%",       delta=coc_delta,
+                           help="Annual CF / Total cash invested (down + closing + repairs). Target ≥ 7%")
+                grm = r.get("GRM", 0)
+                grm_delta = "✓ Good" if grm <= 7 else "OK" if grm <= 9 else "⚠ High"
+                im4.metric("GRM",               f"{grm:.1f}",        delta=grm_delta,
+                           help="Gross Rent Multiplier = Price / Annual rent. Target ≤ 9")
+                im5.metric("Break-even Rent",   f"${r.get('Break-even Rent',0):,.0f}/mo",
+                           help="Minimum monthly rent to cover all expenses at zero cashflow")
 
-                # Agent info if available
+                # ── Price stack ──
+                st.markdown('<div class="section-label">Offer Stack</div>', unsafe_allow_html=True)
+                p1, p2, p3, p4 = st.columns(4)
+                p1.metric("List Price",            f"${r['List Price']:,.0f}")
+                p2.metric("Buyer Max Purchase",    f"${r['Buyer Max Purchase']:,.0f}",
+                          help="Capped at list − $10k. What your end buyer pays.")
+                p3.metric("Your Max Offer",        f"${r['Your Max Offer']:,.0f}",
+                          help="Your wholesale contract price to seller = Buyer price − fee − closing")
+                p4.metric("Your Wholesale Fee",    f"${r['Your Wholesale Fee']:,.0f}")
+                pp1, pp2, pp3, _ = st.columns(4)
+                pp1.metric("Down Payment",         f"${r['Buyer Down Payment']:,.0f}")
+                pp2.metric("Loan Amount",          f"${r['Buyer Loan Amount']:,.0f}")
+                pp3.metric("Closing Costs",        f"${r['Buyer Closing Costs']:,.0f}")
+
+                # ── Monthly cash flow ──
+                st.markdown('<div class="section-label">Monthly Cash Flow</div>', unsafe_allow_html=True)
+                mf1, mf2, mf3, mf4, mf5, mf6 = st.columns(6)
+                mf1.metric("S8 Rent",        f"${r['Section 8 Rent ($/mo)']:,.0f}")
+                mf2.metric("Mortgage",       f"−${r['Monthly Mortgage']:,.0f}")
+                mf3.metric("Taxes",          f"−${r['Monthly Taxes']:,.0f}")
+                mf4.metric("Insurance",      f"−${r['Monthly Insurance']:,.0f}")
+                mf5.metric("CapEx Reserve",  f"−${r.get('Monthly CapEx',0):,.0f}",
+                           help="10% of gross rent set aside for capital expenditures (roof, HVAC, etc.)")
+                mf6.metric("Mgmt + Maint",   f"−${r.get('Monthly Mgmt+Maint',0):,.0f}")
+                cf_val = r.get("Est Buyer CF ($/mo)", 0)
+                cf_color = "#34d073" if cf_val >= 400 else "#f5a623" if cf_val >= 200 else "#ff6b6b"
+                st.markdown(
+                    f'<div style="background:#1C1C1E;border-radius:12px;padding:14px 20px;margin:8px 0;">'
+                    f'<span style="color:#8E8E93;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;">NET MONTHLY CASHFLOW</span>'
+                    f'<div style="color:{cf_color};font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-top:4px;">'
+                    f'${cf_val:+,.0f}/mo</div>'
+                    f'<div style="color:#8E8E93;font-size:11px;margin-top:2px;">'
+                    f'${r.get("Annual Cash Flow",0):,.0f}/yr · Total cash to close ${r.get("Total Cash to Close",0):,.0f}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+
+                # ── 5-Year rent & CF projection ──
+                proj = r.get("_proj_5yr") or []  # might be in original results obj
+                if not proj:
+                    # Recompute if needed (when from results_sorted which dropped _proj_5yr)
+                    _r2 = r.get("Section 8 Rent ($/mo)", 0)
+                    proj = []
+                    for yr in range(1, 6):
+                        _eff = max(0, _r2 - utility_allowance)
+                        _egi = _eff * (1 - vacancy_rate)
+                        _vexp = _eff * (maintenance_rate + mgmt_rate)
+                        _capx = _r2 * capex_rate
+                        _fixed = (r.get("Monthly Taxes",0) * (1.02**(yr-1))
+                                + r.get("Monthly Insurance",0) * (1.02**(yr-1))
+                                + r.get("Monthly Mortgage",0))
+                        _cf = _egi - _vexp - _capx - _fixed
+                        proj.append({"year": yr, "rent": round(_r2), "cf": round(_cf)})
+                        _r2 = round(_r2 * (1 + rent_growth_rate))
+
+                if proj:
+                    st.markdown('<div class="section-label">5-Year Projection</div>', unsafe_allow_html=True)
+                    pcols = st.columns(5)
+                    for i, p in enumerate(proj):
+                        cf_sign = "+" if p["cf"] >= 0 else ""
+                        pcols[i].metric(
+                            f"Year {p['year']}",
+                            f"${p['rent']:,}/mo",
+                            delta=f"{cf_sign}${p['cf']:,} CF",
+                        )
+
+                # ── Repairs + property ──
+                st.markdown('<div class="section-label">Property & Repairs</div>', unsafe_allow_html=True)
+                rp1, rp2, rp3 = st.columns(3)
+                rp1.metric("Sqft",        str(int(r["Sqft"])) if r.get("Sqft") else "Unknown")
+                rp2.metric("Est. Repairs", r.get("Est Repairs", "Unknown"),
+                           help="Based on condition + sqft. Rough wholesale range — not a contractor bid.")
+                rp3.metric("Repair Tier",  r.get("Repair Tier", "—"))
+
+                # Agent info
                 if r.get("Agent Name") or r.get("Agent Email") or r.get("Agent Phone"):
+                    st.markdown('<div class="section-label">Agent</div>', unsafe_allow_html=True)
                     ag1, ag2, ag3 = st.columns(3)
-                    if r.get("Agent Name"):  ag1.caption(f"👤 **Agent:** {r['Agent Name']}")
-                    if r.get("Agent Email"): ag2.caption(f"📧 **Email:** {r['Agent Email']}")
-                    if r.get("Agent Phone"): ag3.caption(f"📞 **Phone:** {r['Agent Phone']}")
+                    if r.get("Agent Name"):  ag1.caption(f"**Agent:** {r['Agent Name']}")
+                    if r.get("Agent Email"): ag2.caption(f"**Email:** {r['Agent Email']}")
+                    if r.get("Agent Phone"): ag3.caption(f"**Phone:** {r['Agent Phone']}")
 
-                # ZIP market context (from Census ACS — free)
-                st.markdown("**ZIP Market Context (US Census ACS)**")
+                # ── Market context ──
+                st.markdown('<div class="section-label">ZIP Market Context</div>', unsafe_allow_html=True)
                 zc1, zc2, zc3 = st.columns(3)
-                zc1.metric("Zip Median Home Value", f"${r['Zip Median Home Value']:,.0f}" if r['Zip Median Home Value'] else "N/A")
-                zc2.metric("Price vs Zip Median",   r['Price vs Zip Median'])
-                zc3.metric("Zip Vacancy Rate",       f"{r['Zip Vacancy Rate (%)']:.1f}%")
+                zc1.metric("Zip Median Value", f"${r['Zip Median Home Value']:,.0f}" if r.get("Zip Median Home Value") else "N/A")
+                zc2.metric("Price vs Median",  r.get("Price vs Zip Median","N/A"))
+                zc3.metric("Zip Vacancy Rate", f"{r['Zip Vacancy Rate (%)']:.1f}%")
 
-                # Condition & flags
-                st.markdown(f"**Condition:** {r['Condition']}")
-                if r["Inspection Flags"]:
-                    flag_lower = r["Inspection Flags"].lower()
-                    css = "flag-critical" if "critical" in flag_lower else ("flag-inspect" if "inspect" in flag_lower else "flag-rehab")
-                    st.markdown(f"<div class='{css}'>⚠️ {r['Inspection Flags']}</div>", unsafe_allow_html=True)
+                # ── Flags ──
+                if r.get("Inspection Flags"):
+                    st.markdown('<div class="section-label">Flags</div>', unsafe_allow_html=True)
+                    for flag in r["Inspection Flags"].split(" | "):
+                        if not flag.strip(): continue
+                        fl = flag.lower()
+                        css = "flag-critical" if "critical" in fl else \
+                              "flag-inspect"  if any(x in fl for x in ["inspect","dscr","lender","hqs","risk"]) else \
+                              "flag-rehab"    if any(x in fl for x in ["rehab","repair","work","distress"]) else \
+                              "flag-rehab"
+                        st.markdown(f'<div class="{css}">{flag}</div>', unsafe_allow_html=True)
 
-                # Zillow listing signals
-                zil_row1, zil_row2, zil_row3 = st.columns(3)
-                if r.get("Days on Market"):
-                    zil_row1.metric("Days on Market", r["Days on Market"])
-                if r.get("Price Reduction"):
-                    zil_row2.metric("Price Reduction", r["Price Reduction"])
-                if r.get("Tax Assessed Value"):
-                    zil_row3.metric("Tax Assessed Value", f"${r['Tax Assessed Value']:,.0f}" if isinstance(r['Tax Assessed Value'], (int, float)) and r['Tax Assessed Value'] else "N/A")
+                # ── Zillow + listing data ──
+                zil_dom = r.get("Days on Market")
+                zil_pr  = r.get("Price Reduction")
+                zil_tv  = r.get("Tax Assessed Value")
+                if zil_dom or zil_pr or zil_tv:
+                    st.markdown('<div class="section-label">Zillow Signals</div>', unsafe_allow_html=True)
+                    zc1, zc2, zc3 = st.columns(3)
+                    if zil_dom: zc1.metric("Days on Market", zil_dom)
+                    if zil_pr:  zc2.metric("Price Reduction", zil_pr)
+                    if zil_tv and isinstance(zil_tv,(int,float)) and zil_tv:
+                        zc3.metric("Tax Assessed Value", f"${zil_tv:,.0f}")
                 if r.get("Zillow Insight"):
-                    st.info(f"💡 **Zillow Insight:** {r['Zillow Insight']}")
-
-                if r["Listing Description"]:
-                    st.caption(f"📋 **Listing Description:** {r['Listing Description'][:400]}")
-                st.caption(f"Rent source: {r['Rent Source']}  |  Description source: {r['Desc Source']}")
+                    st.markdown(
+                        f'<div class="flag-rehab">💡 {r["Zillow Insight"]}</div>',
+                        unsafe_allow_html=True
+                    )
+                if r.get("Listing Description"):
+                    st.caption(f"Description: {r['Listing Description'][:400]}")
+                st.caption(f"Rent: {r['Rent Source']}  ·  Description: {r['Desc Source']}")
 
     # ── Exports ──
-    st.markdown("---")
-    st.markdown("### ⬇️ Export")
+    st.markdown('<div class="section-label">Export</div>', unsafe_allow_html=True)
+    export_cols = [c for c in results_sorted.columns if not c.startswith("_")]
     ec1, ec2 = st.columns(2)
-
     with ec1:
-        csv_all = results_sorted.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "Export ALL Properties (CSV)",
-            csv_all,
-            "section8_all_offers.csv",
-            "text/csv",
-            use_container_width=True,
-        )
-
+        csv_all = results_sorted[export_cols].to_csv(index=False).encode("utf-8")
+        st.download_button("Download All Properties", csv_all,
+                           "section8_all_offers.csv", "text/csv",
+                           use_container_width=True)
     with ec2:
         good = results_sorted[results_sorted["Quality"].isin(["Green Light","Caution"])]
-        csv_good = good.to_csv(index=False).encode("utf-8")
+        csv_good = good[export_cols].to_csv(index=False).encode("utf-8")
         st.download_button(
-            f"Export Green Light + Caution Only ({len(good)} deals) (CSV)",
-            csv_good,
-            "section8_good_offers.csv",
-            "text/csv",
-            use_container_width=True,
-            type="primary",
+            f"Download Green Light + Caution ({len(good)} deals)",
+            csv_good, "section8_good_offers.csv", "text/csv",
+            use_container_width=True, type="primary",
         )
 
 else:
-    st.markdown("### Ready — upload your property list to begin")
+    st.markdown('<div class="section-label">Get Started</div>', unsafe_allow_html=True)
     st.markdown(
-        "**Required columns:** `Address` (or split as `Street` + `City` + `State`) · `Zip` · `Bedrooms` · `List Price`\n\n"
-        "**Optional columns:**\n"
-        "- `Sqft` — improves Section 8 rent accuracy (adjusts HUD SAFMR up/down based on size vs. HUD standard)\n"
-        "- `Agent Name` / `Agent Email` — passed through to export unchanged\n"
-        "- `Description` — listing remarks for keyword-based condition analysis\n\n"
-        "**Export includes:** Your Max Offer · Buyer Max Purchase · Section 8 Rent · Est. Repairs · "
-        "Monthly cashflow breakdown · All agent/sqft pass-through fields.\n\n"
-        "Properties listed under **$20,000** are automatically excluded."
+        "Upload a CSV or Excel file with your property list to begin.\n\n"
+        "**Required:** `Address` (or `Street` + `City` + `State`) · `Zip` · `Bedrooms` · `List Price`\n\n"
+        "**Optional:** `Sqft` · `Agent Name` · `Agent Email` · `Agent Phone` · `Description`\n\n"
+        "**Rent is validated against 3 sources:** HUD SAFMR · Census ACS median rent · "
+        "Rentcast AVM (if API key provided). Low-confidence rent gets a reasonableness flag.\n\n"
+        "**Export includes:** S8 Rent · Rent Confidence · DSCR Ratio · Cash-on-Cash · "
+        "Rent-to-Value · GRM · Break-even Rent · Est. Repairs · All agent pass-through fields."
     )
